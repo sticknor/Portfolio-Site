@@ -31,6 +31,6 @@ class Splash extends Page {
     	splashContainer.css("background-image", "url(" + this.images[this.index].src + ")");
     }, 5000));
 
-    $("#page").append(splashContainer);
+    $("body").append(splashContainer);
   }
 }

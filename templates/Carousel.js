@@ -218,7 +218,7 @@ class Carousel extends Page {
     $(document).off("keydown");
     $(document).on("keydown", this.checkKey.bind(this));
 
-    if (window.innerWidth <= 850) {
+    if (window.innerWidth <= 1100) {
       this.renderMobileView();
     } else if (this.isThumbnailView) {
       this.renderThumbnailView();
