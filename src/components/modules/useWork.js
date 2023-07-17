@@ -65,7 +65,7 @@ const useWork = (recordId, base) => {
 const getValuesFromRecord = (record) => {
     const workImages = record.get('Work');
     return {
-        url: workImages.length > 0 ? workImages[0].url : undefined,
+        url: workImages && workImages.length > 0 ? workImages[0].url : undefined,
         title: record.get('Title'),
         year: record.get('Year'),
         medium: record.get('Medium'),
@@ -73,7 +73,8 @@ const getValuesFromRecord = (record) => {
         height: record.get('Height'),
         depth: record.get('Depth'),
         description: record.get('Description'),
-        price: record.get('Price')
+        price: record.get('Price'),
+        videourl: record.get('Video URL')
     }
 }
 

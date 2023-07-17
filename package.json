@@ -21,8 +21,8 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts --openssl-legacy-provider build",
+    "start": "react-scripts start --openssl-legacy-provider",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build --openssl-legacy-provider",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"

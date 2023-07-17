@@ -5,7 +5,7 @@ import CarouselPricesModule from './modules/CarouselPricesModule';
 function PriceListPage({ page, base }) {
 
     const [saleCatogories, setSaleCatogories] = useState([]);
-    console.log(page);
+
     useEffect(() => {
         base(page.pageTitle)
             .select({ view: 'Grid view' })

@@ -4,6 +4,8 @@ import { ImageFullModule, ImageThreeQuarterModule, ImageHalfModule } from './mod
 import { ImageWithTextModule, TextWithImageModule, TextModule } from './modules/ImageAndTextModules';
 import CarouselModule from './modules/CarouselModule';
 import { CascadeLeftModule, CascadeRightModule } from './modules/CascadeModules';
+import { GridModule } from './modules/GridModules';
+import { VideoModule } from './modules/VideoModules';
 
 function Page({ page, base }) {
 
@@ -57,6 +59,10 @@ function Page({ page, base }) {
                         return <CascadeLeftModule key={module.moduleTitle} module={module} base={base} />
                     } else if (module.moduleType === "Cascade Right") {
                         return <CascadeRightModule key={module.moduleTitle} module={module} base={base} />
+                    } else if (module.moduleType === "Video") {
+                        return <VideoModule key={module.moduleTitle} module={module} base={base} />
+                    } else if (module.moduleType === "Grid") {
+                        return <GridModule key={module.moduleTitle} module={module} base={base} />
                     }
                     return null;
                 })}

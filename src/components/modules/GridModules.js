@@ -1,47 +1,38 @@
 // React
 import React from 'react';
-import PropTypes from 'prop-types'
+import { useAllWorksFromModule, formatWorkInfoLine } from './useWork';
 
-function GridEqual(props) {
-    const { module } = props;
+function GridModule({ module, base }) {
+    const [works] = useAllWorksFromModule(module, base);
+
 
     return (
-        <div className='pageModule'>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <img style={{ width: "25%", height: "500px", marginRight: '5%', marginTop: 200, background: "#ccc" }} />
-                <img style={{ width: "25%", height: "500px", marginRight: '5%', marginTop: 100, background: "#ccc" }} />
-                <img style={{ width: "25%", height: "500px", marginRight: '5%', background: "#ccc" }} />
-            </div>
-            <div>{module.moduleType}</div>
-        </div >
+        <div className='pageModule gridModule'>
+        <div style={{ display: 'flex', flexDirection: 'row', maxWidth: '100%', gap: 50, justifyContent: "space-between" }}>
+            {
+                works.map((w) => (
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}>
+                        <img
+                            alt="artwork"
+                            className='workImage'
+                            src={w.url}
+                            style={{ width: '100%' }}
+                        />
+                        {module.showWorkTitlesWithinModule && formatWorkInfoLine(w)}
+                    </div>)
+                )
+            }
+        </div>
+        {module.moduleTitle && <div class="workText">{module.moduleTitle}</div>}
+        {module.moduleText && <div class="workText">{module.moduleText}</div>}
+    </div>
     );
 }
 
-GridEqual.propTypes = {
-    module: PropTypes.object
-}
-
-
-function GridWithScale(props) {
-    const { module } = props;
-
-    console.log(module);
-
-    return (
-        <div className='pageModule'>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <img style={{ width: "25%", height: "500px", marginRight: '5%', background: "#ccc" }} />
-                <img style={{ width: "25%", height: "500px", marginRight: '5%', marginTop: 100, background: "#ccc" }} />
-                <img style={{ width: "25%", height: "500px", marginRight: '5%', marginTop: 200, background: "#ccc" }} />
-
-            </div>
-            <div>{module.moduleType}</div>
-        </div >
-    );
-}
-
-GridWithScale.propTypes = {
-    module: PropTypes.object
-}
-
-export { GridEqual, GridWithScale }
+export { GridModule }
