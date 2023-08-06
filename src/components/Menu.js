@@ -1,15 +1,37 @@
 // React
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 function Menu(props) {
-  const { menuItems, siteTitle } = props;
+  const { menuItems, siteTitle, isLoading } = props;
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div class="lds-circle">
+          <div></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div id="menuContainer">
       <div id="menu">
-        <Link className="menuOption clickable homeMenuOption" to={'/'}>
+        <Link className="menuOption clickable homeMenuOption" to={"/"}>
           {siteTitle}
         </Link>
 
@@ -22,17 +44,15 @@ function Menu(props) {
                 key={`menu-${menuItem.pageRoute}`}
               >
                 <>
-                  <span className="menuOptionTitle">
-                    {menuItem.pageTitle}
-                  </span>
-                  {menuItem.pageSubtitle &&
+                  <span className="menuOptionTitle">{menuItem.pageTitle}</span>
+                  {menuItem.pageSubtitle && (
                     <>
                       <br />
                       <span className="menuOptionSubtitle">
                         {menuItem.pageSubtitle}
                       </span>
                     </>
-                  }
+                  )}
                 </>
               </Link>
             );
@@ -40,14 +60,14 @@ function Menu(props) {
             return null;
           }
         })}
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }
 
 Menu.propTypes = {
   siteTitle: PropTypes.string,
   menuItems: PropTypes.array,
-}
+};
 
 export default Menu;
