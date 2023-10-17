@@ -518,6 +518,17 @@ body {
     align-self: center !important;
   }
 
+  .gridModule > div {
+    flex-direction: column !important;
+    gap: 30px !important;
+  }
+
+  .gridElement {
+    margin-top: 0px !important;
+    width: 100% !important;
+    align-self: center !important;
+  }
+
   .textWithImageModule {
     flex-direction: column-reverse !important;
   }

@@ -15,6 +15,7 @@ import SplashImage from "./splash.jpg";
 import Home from "./components/Home";
 import Page from "./components/Page";
 import PriceListPage from "./components/PriceListPage";
+import InstagramEmbedPage from "./components/InstagramEmbedPage";
 import Menu from "./components/Menu";
 
 // Style
@@ -76,6 +77,7 @@ export default function App() {
           const pageSubtitle = record.get("Page Subtitle");
           const pageRoute = pageTitle.replaceAll(" ", "-").toLowerCase();
           const pageIsPriceList = record.get("Price List");
+          const pageIsInstagramEmbed = record.get("Instagram");
           const pageIsAboutPage = record.get("About Page");
           const showInMenu = record.get("Show In Menu");
           if (pageIsPriceList) {
@@ -96,6 +98,14 @@ export default function App() {
               showInMenu,
             };
             _menuItems.push(_aboutPage);
+          } else if (pageIsInstagramEmbed) {
+            _menuItems.push({
+              pageTitle,
+              pageSubtitle,
+              pageRoute,
+              pageIsInstagramEmbed,
+              showInMenu,
+            });
           } else {
             _menuItems.push({
               pageTitle,
@@ -147,6 +157,14 @@ export default function App() {
                 key={`${menuItem.pageRoute}`}
                 path={`${menuItem.pageRoute}`}
                 element={<PriceListPage base={base} page={menuItem} />}
+              />
+            );
+          } else if (menuItem.pageIsInstagramEmbed) {
+            return (
+              <Route
+                key={`${menuItem.pageRoute}`}
+                path={`${menuItem.pageRoute}`}
+                element={<InstagramEmbedPage base={base} page={menuItem} />}
               />
             );
           }
