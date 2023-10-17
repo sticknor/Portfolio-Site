@@ -15,11 +15,9 @@ function InstagramEmbedPage({ page, base }) {
         }
         const _imagesToEmbed = [];
         records.forEach(function (record) {
-          console.log(record);
           _imagesToEmbed.push(record.get("InstagramID"));
         });
         setImagesToEmbed(_imagesToEmbed);
-        console.log(imagesToEmbed);
       });
   }, [page.pageTitle]);
 
