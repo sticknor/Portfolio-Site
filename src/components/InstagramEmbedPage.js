@@ -33,7 +33,14 @@ function InstagramEmbedPage({ page, base }) {
         >
           {imagesToEmbed.map((instagramID, index) => {
             return (
-              <div style={{ width: 500, maxWidth: "100%", marginBottom: 20 }}>
+              <div
+                style={{
+                  width: 500,
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  marginBottom: 20,
+                }}
+              >
                 <InstagramEmbed
                   url={`https://www.instagram.com/p/${instagramID}/`}
                   width={"100%"}
