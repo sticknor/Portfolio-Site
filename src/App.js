@@ -81,7 +81,7 @@ export default function App() {
           const pageIsAboutPage = record.get("About Page");
           const showInMenu = record.get("Show In Menu");
           const menuLink = record.get("Link");
-          const isLink = menuLink != "";
+          const isLink = menuLink != "" && menuLink != undefined;
           if (pageIsPriceList) {
             const _pricePage = {
               pageTitle,
@@ -138,7 +138,6 @@ export default function App() {
     }
   `;
 
-  console.log(menuItems);
   // MARKUP
   return (
     <HashRouter basename="/" key={window.location.pathname}>
@@ -180,7 +179,6 @@ export default function App() {
               />
             );
           }
-          console.log(menuItem.pageRoute);
           return (
             <Route
               key={`${menuItem.pageRoute}`}

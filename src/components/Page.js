@@ -20,9 +20,6 @@ import { GridModule } from "./modules/GridModules";
 import { VideoModule } from "./modules/VideoModules";
 
 function Page({ page, base }) {
-  console.log(page);
-  console.log(base);
-
   const [modules, setModules] = useState([]);
 
   useEffect(() => {

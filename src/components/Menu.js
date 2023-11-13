@@ -36,53 +36,47 @@ function Menu(props) {
         </Link>
 
         {menuItems.map((menuItem, index) => {
-          if (menuItem.showInMenu) {
-            if (menuItem.isLink) {
-              return (
-                <a
-                  className="menuOption clickable"
-                  href={menuItem.menuLink}
-                  target="_blank"
-                  key={`menu-${menuItem.pageRoute}`}
-                >
-                  <>
-                    <span className="menuOptionTitle">
-                      {menuItem.pageTitle}
-                    </span>
-                    {menuItem.pageSubtitle && (
-                      <>
-                        <br />
-                        <span className="menuOptionSubtitle">
-                          {menuItem.pageSubtitle}
-                        </span>
-                      </>
-                    )}
-                  </>
-                </a>
-              );
-            } else {
-              return (
-                <Link
-                  className="menuOption clickable"
-                  to={menuItem.pageRoute}
-                  key={`menu-${menuItem.pageRoute}`}
-                >
-                  <>
-                    <span className="menuOptionTitle">
-                      {menuItem.pageTitle}
-                    </span>
-                    {menuItem.pageSubtitle && (
-                      <>
-                        <br />
-                        <span className="menuOptionSubtitle">
-                          {menuItem.pageSubtitle}
-                        </span>
-                      </>
-                    )}
-                  </>
-                </Link>
-              );
-            }
+          if (menuItem.isLink === true && menuItem.showInMenu) {
+            return (
+              <a
+                className="menuOption clickable"
+                href={menuItem.menuLink}
+                target="_blank"
+                key={`menu-${menuItem.pageRoute}`}
+              >
+                <>
+                  <span className="menuOptionTitle">{menuItem.pageTitle}</span>
+                  {menuItem.pageSubtitle && (
+                    <>
+                      <br />
+                      <span className="menuOptionSubtitle">
+                        {menuItem.pageSubtitle}
+                      </span>
+                    </>
+                  )}
+                </>
+              </a>
+            );
+          } else if (menuItem.showInMenu) {
+            return (
+              <Link
+                className="menuOption clickable"
+                to={menuItem.pageRoute}
+                key={`menu-${menuItem.pageRoute}`}
+              >
+                <>
+                  <span className="menuOptionTitle">{menuItem.pageTitle}</span>
+                  {menuItem.pageSubtitle && (
+                    <>
+                      <br />
+                      <span className="menuOptionSubtitle">
+                        {menuItem.pageSubtitle}
+                      </span>
+                    </>
+                  )}
+                </>
+              </Link>
+            );
           } else {
             return null;
           }
