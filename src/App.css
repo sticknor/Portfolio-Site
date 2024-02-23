@@ -593,3 +593,33 @@ body {
     transform: rotateY(3600deg);
   }
 }
+
+.aboutContainer {
+  width: 90%;
+  text-align: left;
+  margin-bottom: 30px;
+  color: black;
+}
+
+.line {
+  display: block;
+}
+
+.aboutParagraph {
+  margin-bottom: 15px;
+}
+
+.aboutContainerHeading {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  font-size: 18px;
+  border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+.aboutmultilineB {
+  margin-bottom: 15px;
+}
+
+.aboutmultilineA {
+  margin-bottom: 15px;
+}

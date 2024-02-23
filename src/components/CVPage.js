@@ -2,201 +2,101 @@
 import React, { useState, useEffect } from "react";
 
 function CVPage({ page, base }) {
-  const [bio, setBio] = useState("");
-  const [bioImage, setBioImage] = useState([]);
+  const [recordsByCategory, setRecordsByCategory] = useState({});
 
   useEffect(() => {
-    base("About")
+    base("CV")
       .select({ view: "Grid view" })
       .firstPage(function (err, records) {
         if (err) {
           console.error(err);
           return;
         }
-        let _bio;
-        let _bioImage;
+        const _recordsByCategory = {};
         records.forEach(function (record) {
-          _bioImage = record.get("Bio Image");
-          _bio = record.get("Bio");
-          setBio(_bio);
-          setBioImage(_bioImage);
+          const category = record.get("Category")[0];
+
+          // format record
+          let show = record.get("Show on CV");
+          let title = record.get("Title");
+          let place = record.get("Place");
+          let city = record.get("City, State");
+          let dates = record.get("Date(s)");
+          let subtitle = record.get("Subtitle");
+          let description = record.get("Description");
+          let link = record.get("Link");
+          let linkTitle = record.get("Link Title");
+          let recordLine1 = title;
+          let recordLine2 = [];
+          if (place) recordLine2.push(place);
+          if (city) recordLine2.push(city);
+          if (dates) recordLine2.push(dates);
+          recordLine2 = recordLine2.join(" · ");
+
+          let formattedRecord = {
+            show: show,
+            line1: recordLine1,
+            line2: recordLine2,
+            line3: subtitle,
+            line4: description,
+            link: { title: linkTitle, url: link },
+          };
+
+          if (_recordsByCategory[category] === undefined) {
+            _recordsByCategory[category] = [formattedRecord];
+          } else {
+            _recordsByCategory[category] = _recordsByCategory[category].concat([
+              formattedRecord,
+            ]);
+          }
         });
+        setRecordsByCategory(_recordsByCategory);
       });
   }, [page.pageTitle]);
 
+  if (recordsByCategory === undefined) return null;
   return (
-    <div id={"page"}>
+    <div id={"page"} className="cvpage">
       <div id="scrollContent">
-        <div
-          className="pageModule imageWithTextModule"
-          style={{
-            flexDirection: "row",
-            gap: 50,
-            alignItems: "flex-start",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flex: 0.5,
-              flexDirection: "column",
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img
-              alt="studio portrait"
-              className="workImage"
-              style={{ width: "70%", maxHeight: 400, height: "auto" }}
-              src={bioImage[0] ? bioImage[0].url : ""}
-            />
-          </div>
-          <div
-            className="imageWithTextModuleText"
-            style={{
-              display: "flex",
-              fontSize: 18,
-              flex: 1,
-              flexDirection: "column",
-            }}
-          >
-            {bio && (
-              <div className="workText" style={{ whiteSpace: "pre-wrap" }}>
-                {bio}
-                <div>
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    href="https://www.instagram.com/sammytthebrave/"
-                  >
-                    @sammytthebrave
-                  </a>
-                </div>
-                <div>
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    href="https://airtable.com/shr1xUUOkb0Gcs3Uv"
-                  >
-                    Join my mailing list
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        {Object.keys(recordsByCategory).map((category, index) => {
+          return (
+            <div
+              className="aboutContainer"
+              style={{ marginTop: 5 }}
+              key={`${category}_${index}`}
+            >
+              <div className="aboutContainerHeading">{category}</div>
+              {recordsByCategory[category].map((record, index) => {
+                if (record.show) {
+                  return (
+                    <div style={{ marginBottom: 15 }}>
+                      <div>{record.line1}</div>
+                      <div style={{ fontSize: 14, opacity: 0.5 }}>
+                        {record.line2}
+                      </div>
+                      <div style={{ fontSize: 14, opacity: 0.5 }}>
+                        {record.line3}
+                      </div>
+                      <div style={{ fontSize: 14, opacity: 0.5 }}>
+                        {record.line4}
+                      </div>
+                      <a
+                        style={{ fontSize: 14, opacity: 0.5 }}
+                        target="_blank"
+                        href={record.link.url}
+                      >
+                        {record.link.title}
+                      </a>
+                    </div>
+                  );
+                }
+              })}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 export default CVPage;
-
-// class CV extends Page {
-
-//     constructor(data) {
-//       super(data);
-//     }
-
-//     renderRow(rowData) {
-
-//       var entry = $("<div class='entryCV'>");
-
-//       if (rowData.get("Title")) {
-//         var title = $("<span class='titleCV'>");
-//         title.html(rowData.get("Title"));
-//       }
-
-//       if (rowData.get("Place")) {
-//         var place = $("<span class='preDot placeCV'>");
-//         place.html(rowData.get("Place"));
-//       }
-
-//       if (rowData.get("City, State")) {
-//         var location = $("<span class='preDot locationCV'>");
-//         location.html(rowData.get("City, State"));
-//       }
-
-//       if (rowData.get("Date(s)")) {
-//         var date = $("<span class='preDot dateCV'>");
-//         date.html(rowData.get("Date(s)"));
-//       }
-
-//       if (rowData.get("Subtitle")) {
-//         var subtitle = $("<div class='subtitleCV'>");
-//         subtitle.html(rowData.get("Subtitle"));
-//       }
-
-//       if (rowData.get("Description")) {
-//         var description = $("<div class='descriptionCV'>");
-//         description.html(rowData.get("Description").replace(/\n/g, "<br/>"));
-//       }
-
-//       if (rowData.get("Link")) {
-//         var link = $("<a class='linkCV'>");
-//         link.attr("href", rowData.get("Link"));
-//         link.attr("target", "_blank");
-//         if (rowData.get("Link Title")) {
-//           link.html(rowData.get("Link Title") + "&rarr;");
-//         } else {
-//           link.html("&#128279;");
-//         }
-//         var linkContainer = $("<div>");
-//         linkContainer.append(link);
-//       }
-
-//       entry.append(title);
-//       entry.append(place);
-//       entry.append(location);
-//       entry.append(date);
-
-//       entry.append(subtitle);
-//       entry.append(description);
-//       entry.append(linkContainer);
-
-//       var category = (rowData.get("Category"))[0].split(" ").join("");
-//       var sortedContainer = $("#about"+category);
-//       sortedContainer.append(entry);
-//     }
-
-//     render() {
-//         this.setupPage()
-
-//       var rows = this.data.rows;
-
-//       var cvContainer = $("<div class='cvContainer'>");
-
-//         for (var index in rows) {
-
-//             var row = rows[index];
-
-//         // CV entry basic requirements are Category and Title
-//         if (row.get("Category")[0] === undefined) continue;
-//         if (row.get("Title") === undefined) continue;
-
-//             // Add header if its missing
-//             var container;
-//         var category = (row.get("Category")[0]).split(" ").join("");
-
-//             if ($("#about"+category).length) {
-//                 container = $("#about"+category)
-//             } else {
-//                 container = $("<div>");
-//                 container.attr("id", "about"+category);
-//           container.addClass("aboutContainer")
-//                 var containerHeading = $("<div>");
-//                 containerHeading.html(row.get("Category")[0]);
-//           if (category) {
-//             containerHeading.addClass("aboutContainerHeading");
-//           }
-//                 container.append(containerHeading);
-//                 cvContainer.append(container);
-//             }
-
-//         $("#page").append(cvContainer);
-//         this.renderRow(row);
-//         }
-//     }
-//   }

@@ -21,6 +21,7 @@ import Menu from "./components/Menu";
 // Style
 import "./App.css";
 import AboutPage from "./components/AboutPage";
+import CVPage from "./components/CVPage";
 
 export default function App() {
   // const { location } = useLocation();
@@ -80,6 +81,7 @@ export default function App() {
           const pageIsPriceList = record.get("Price List");
           const pageIsInstagramEmbed = record.get("Instagram");
           const pageIsAboutPage = record.get("About Page");
+          const pageIsCVPage = record.get("CV Page");
           const showInMenu = record.get("Show In Menu");
           const menuLink = record.get("Link");
           const isLink = menuLink != "" && menuLink != undefined;
@@ -154,6 +156,10 @@ export default function App() {
       {/* MENU */}
       <Menu siteTitle={siteTitle} menuItems={menuItems} isLoading={isLoading} />
       <Routes key={window.location.pathname}>
+        <Route
+          path="/CV"
+          element={<CVPage base={base} page={{ pageTitle: "CV" }} />}
+        />
         {menuItems.map((menuItem) => {
           if (menuItem.pageIsAboutPage) {
             return (
