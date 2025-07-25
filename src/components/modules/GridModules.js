@@ -1,9 +1,9 @@
 // React
 import React from "react";
-import { useAllWorksFromModule, formatWorkInfoLine } from "./useWork";
+import { formatWorkInfoLine } from "./formatWorkDetails";
 
 function GridModule({ module, base }) {
-  const [works] = useAllWorksFromModule(module, base);
+  const works = module.moduleWorks;
 
   return (
     <div className="pageModule gridModule">
@@ -30,7 +30,7 @@ function GridModule({ module, base }) {
             <img
               alt="artwork"
               className="workImage"
-              src={w.url}
+              src={w.imageLink}
               style={{ width: "100%" }}
             />
             {module.showWorkTitlesWithinModule && formatWorkInfoLine(w)}

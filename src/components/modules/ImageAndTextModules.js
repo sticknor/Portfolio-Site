@@ -1,14 +1,19 @@
 // React
 import React from "react";
-import { useSingleWorkFromModule, formatWorkInfoLine } from "./useWork";
+import { formatWorkInfoLine } from "./formatWorkDetails";
 
-function ImageWithTextModule({ module, base }) {
-  const [work] = useSingleWorkFromModule(module, base);
-  if (work === undefined) return null;
+function ImageWithTextModule({ module }) {
+  if (module.moduleWorks.length === 0) {
+    return null;
+  }
+  const work = module.moduleWorks[0];
+  if (!work) {
+    return null;
+  }
 
   return (
     <div
-      className="pageModule imageWithTextModule"
+      className="pageModule imageWithTextModule mobileStack"
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -27,7 +32,7 @@ function ImageWithTextModule({ module, base }) {
           alt="artwork"
           className="workImage"
           style={{ width: "100%", height: "auto" }}
-          src={work.url}
+          src={work.imageLink}
         />
         {module.showWorkTitlesWithinModule && formatWorkInfoLine(work)}
       </div>
@@ -48,12 +53,17 @@ function ImageWithTextModule({ module, base }) {
   );
 }
 
-function TextWithImageModule({ module, base }) {
-  const [work] = useSingleWorkFromModule(module, base);
-  if (work === undefined) return null;
+function TextWithImageModule({ module }) {
+  if (module.moduleWorks.length === 0) {
+    return null;
+  }
+  const work = module.moduleWorks[0];
+  if (!work) {
+    return null;
+  }
   return (
     <div
-      className="pageModule textWithImageModule"
+      className="pageModule textWithImageModule mobileStack"
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -66,7 +76,7 @@ function TextWithImageModule({ module, base }) {
           fontSize: 18,
           display: "flex",
           flexDirection: "column",
-          textAlign: "right",
+          textAlign: "left",
           alignItems: "flex-end",
           whiteSpace: "pre-wrap",
         }}
@@ -87,7 +97,7 @@ function TextWithImageModule({ module, base }) {
           alt="artwork"
           className="workImage"
           style={{ width: "100%", height: "auto" }}
-          src={work.url}
+          src={work.imageLink}
         />
         {module.showWorkTitlesWithinModule && formatWorkInfoLine(work)}
       </div>
