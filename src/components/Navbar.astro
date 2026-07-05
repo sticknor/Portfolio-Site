@@ -1,11 +1,8 @@
 ---
-import processPosts from "../data/process.json";
-
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 const links = [
   { to: "/", label: "Works" },
-  ...(processPosts.length > 0 ? [{ to: "/process", label: "Process" }] : []),
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];

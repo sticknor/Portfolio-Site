@@ -108,6 +108,182 @@ iframe {
   cursor: n-resize;
 }
 
+/* Masonry image grids — natural aspect ratios, no square crops */
+.workMasonryGrid {
+  column-count: 3;
+  column-gap: 32px;
+  width: 100%;
+}
+
+.workMasonryItem {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 32px;
+  width: 100%;
+}
+
+.workMasonryItem.clickable {
+  cursor: pointer;
+}
+
+.workMasonryItem img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Masonry thumbs: full natural proportions (no global .workImage max-height cap) */
+.workMasonryItem .workImage {
+  max-height: none;
+  margin-bottom: 0;
+}
+
+/*
+ * Date page: CSS Grid (not column-count) so source order matches reading order
+ * (left→right, then next row). Multi-column CSS flows top→bottom in col 1, then
+ * col 2… which reorders items when read across rows.
+ */
+.workMasonryGrid--datePage {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-count: unset;
+  column-gap: unset;
+  gap: 68px;
+  align-items: center;
+}
+
+.workMasonryGrid--datePage .workMasonryItem {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+.workMasonryGrid--datePage .workMasonryItemCaption {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.45;
+  max-width: 100%;
+}
+
+/* Date page: lock year menu to viewport (sticky scrolls until top; fixed does not) */
+.pageDateCollectionsNavSlot {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  position: relative;
+}
+
+.pageDateCollectionsNavMeasure {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pageDateCollectionsNavMeasure nav,
+.pageDateCollectionsNavFixed {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0;
+}
+
+@media screen and (min-width: 861px) {
+  .pageDateCollectionsNavFixed {
+    position: fixed;
+    /* Align with masonry: navbar (64px) + page row padding (64px) */
+    top: 128px;
+    left: 64px;
+    z-index: 1;
+  }
+}
+
+@media screen and (max-width: 860px) {
+  .pageDateCollectionsNavSlot {
+    align-self: center;
+    width: 100%;
+  }
+
+  .pageDateCollectionsNavMeasure {
+    display: none;
+  }
+
+  .pageDateCollectionsNavFixed {
+    position: static;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* Column flex + flex-grow collapses to 0 height without a fixed parent — show the grid */
+  .pageDateCollectionsContent,
+  .pageCollectionsContent {
+    flex: 0 0 auto !important;
+    height: auto !important;
+    overflow: visible;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .workMasonryGrid {
+    text-align: center;
+  }
+
+  .workMasonryItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .workMasonryItem img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .workMasonryGrid {
+    column-count: 2;
+  }
+
+  .workMasonryGrid--datePage {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .workMasonryGrid {
+    column-count: 1;
+    column-gap: 24px;
+  }
+
+  .workMasonryItem {
+    margin-bottom: 24px;
+  }
+
+  .workMasonryGrid--datePage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+  }
+}
+
+/* About page — responsive layout (see about.astro) */
+.pageAbout {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.pageAbout-bio {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+@media screen and (max-width: 860px) {
+  .pageAbout-portrait {
+    align-self: center !important;
+    max-width: min(350px, 100%) !important;
+  }
+}
+
 .leftArrowOnHover:hover {
   cursor: w-resize;
 }
@@ -202,7 +378,7 @@ iframe {
   }
 
   .workImage {
-    width: 80% !important;
+    width: 100% !important;
   }
 
   .imageFullModule > .workImage,

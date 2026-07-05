@@ -10,6 +10,7 @@ import WorkImage from "./WorkImage.jsx";
 function ImageOnlyModule({ module, widthPercent }) {
   const work = module.moduleWorks[0];
   if (!work) return null;
+  const sizesByWidth = { 50: "45vw", 75: "68vw", 100: "90vw" };
   return (
     <div
       className={`pageModule${widthPercent === 100 ? " imageFullModule" : ""}`}
@@ -19,7 +20,7 @@ function ImageOnlyModule({ module, widthPercent }) {
         style={{ width: `${widthPercent}%`, height: "auto" }}
         image={work.image}
         alt={work.title || "artwork"}
-        sizes={`(max-width: 1100px) 90vw, ${widthPercent}vw`}
+        sizes={`(max-width: 900px) 100vw, ${sizesByWidth[widthPercent]}`}
       />
       {module.showWorkTitlesWithinModule && formatWorkInfoLine(work)}
       {module.moduleTitle && <div className="workText">{module.moduleTitle}</div>}
@@ -47,7 +48,7 @@ function ImageWithTextModule({ module, textFirst = false }) {
         style={{ width: "100%", height: "auto" }}
         image={work.image}
         alt={work.title || "artwork"}
-        sizes="(max-width: 1100px) 90vw, 40vw"
+        sizes="(max-width: 900px) 100vw, 45vw"
       />
       {module.showWorkTitlesWithinModule && formatWorkInfoLine(work)}
     </div>
@@ -163,7 +164,7 @@ function CarouselModule({ module }) {
               className="workImage"
               image={w.image}
               alt={w.title || "artwork"}
-              sizes="60vw"
+              sizes="(max-width: 900px) 90vw, 60vw"
               style={{ maxHeight: "70vh", width: "100%", minHeight: "50vh" }}
             />
             {module.showWorkTitlesWithinModule && formatWorkInfoLine(w)}
@@ -227,24 +228,14 @@ function GridModule({ module }) {
 
   return (
     <div className="pageModule gridModule">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          maxWidth: "100%",
-          gap: 50,
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="workMasonryGrid" style={{ maxWidth: "100%" }}>
         {works.map((w, i) => (
           <div
             key={`grid-${i}`}
-            className="gridElement"
+            className="workMasonryItem gridElement"
             style={{
               display: "flex",
               flexDirection: "column",
-              flex: 1,
-              justifyContent: "center",
               alignItems: "center",
             }}
           >
@@ -252,10 +243,7 @@ function GridModule({ module }) {
               className="workImage"
               image={w.image}
               alt={w.title || "artwork"}
-              sizes={`(max-width: 1100px) 90vw, ${Math.round(
-                100 / works.length,
-              )}vw`}
-              style={{ width: "100%" }}
+              sizes="(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
             />
             {module.showWorkTitlesWithinModule && formatWorkInfoLine(w)}
           </div>

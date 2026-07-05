@@ -28,7 +28,10 @@ export async function getStaticPaths() {
     });
   }
 
-  const sortedDates = Object.keys(dateCollections).sort();
+  // Descending, numeric-aware (2025, 2024, 2022-2023, …)
+  const sortedDates = Object.keys(dateCollections).sort((a, b) =>
+    b.localeCompare(a, undefined, { numeric: true }),
+  );
   for (const date of sortedDates) {
     add(date, {
       type: "date",
@@ -115,6 +118,7 @@ const ogImage =
             </div>
           </div>
           <div
+            class="pageCollectionsContent"
             style={{
               height: "100%",
               flex: 2,
@@ -132,55 +136,56 @@ const ogImage =
 
   {
     type === "date" && (
-      <div
-        style={{
-          marginTop: "64px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flex: 1,
-          backgroundColor: "#fff",
-        }}
-      >
+      <div style={{ marginTop: "64px", backgroundColor: "#fff" }}>
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
+            flexDirection: "row",
             padding: "64px",
             flex: 1,
             gap: "64px",
           }}
           class="mobileStack mobilePadding mobileGap"
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: 1,
-              gap: "64px",
-            }}
-            class="mobileStack mobilePadding mobileGap"
-          >
-            {dates.map((dateCollectionID) => (
-              <a
-                href={`/${encodeURIComponent(dateCollectionID)}`}
-                style={{
-                  color: "black",
-                  fontWeight: dateCollectionID === date ? 600 : 400,
-                  textDecoration:
-                    dateCollectionID === date ? "underline" : "none",
-                }}
-                class={dateCollectionID === date ? "" : "clickable"}
-              >
-                {dateCollectionID}
-              </a>
-            ))}
+          <div class="pageDateCollectionsNavSlot">
+            {/* Invisible copy reserves layout space for the fixed nav */}
+            <div class="pageDateCollectionsNavMeasure" aria-hidden="true">
+              <nav>
+                {dates.map((dateCollectionID) => (
+                  <span>{dateCollectionID}</span>
+                ))}
+              </nav>
+            </div>
+            <nav class="pageDateCollectionsNavFixed" aria-label="Browse by year">
+              {dates.map((dateCollectionID) => (
+                <a
+                  href={`/${encodeURIComponent(dateCollectionID)}`}
+                  style={{
+                    color: "black",
+                    fontWeight: dateCollectionID === date ? 600 : 400,
+                    textDecoration:
+                      dateCollectionID === date ? "underline" : "none",
+                  }}
+                  class={dateCollectionID === date ? "" : "clickable"}
+                >
+                  {dateCollectionID}
+                </a>
+              ))}
+            </nav>
           </div>
-          <WorksLightbox client:load works={pageWorks} centered />
+          <div
+            class="pageDateCollectionsContent"
+            style={{
+              height: "100%",
+              flex: "1 1 0",
+              minWidth: 0,
+              display: "flex",
+              overflow: "auto",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            <WorksLightbox client:load works={pageWorks} variant="date" />
+          </div>
         </div>
       </div>
     )

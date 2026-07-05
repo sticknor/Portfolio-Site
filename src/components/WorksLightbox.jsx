@@ -3,10 +3,13 @@ import { formatWorkInfoLine } from "./formatWorkDetails.jsx";
 import WorkImage from "./WorkImage.jsx";
 
 /**
- * Grid of work thumbnails with a full-screen lightbox
+ * Masonry grid of work thumbnails with a full-screen lightbox
  * (keyboard + touch-swipe navigation). Interactive island.
+ *
+ * variant "collection": CSS multi-column masonry.
+ * variant "date": CSS grid (source order matches reading order) with captions.
  */
-function WorksLightbox({ works, centered = false }) {
+function WorksLightbox({ works, variant = "collection" }) {
   const [fullScreenIndex, setFullScreenIndex] = useState(undefined);
   const lightboxRef = useRef(null);
 
@@ -60,18 +63,21 @@ function WorksLightbox({ works, centered = false }) {
         style={{
           touchAction: "none",
           position: "fixed",
-          top: "0px",
-          left: "0px",
-          right: "0px",
-          bottom: "0px",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           background: "rgba(0, 0, 0, .8)",
           display: "flex",
           flexDirection: "row",
           flex: 1,
-          padding: "64px",
-          gap: "64px",
+          boxSizing: "border-box",
+          height: "100vh",
+          padding: "24px 24px 100px 24px",
+          gap: 0,
           zIndex: 1000,
-          alignItems: "center",
+          alignItems: "stretch",
+          justifyContent: "center",
         }}
         className="upArrowOnHover mobilePaddingSmall"
         onClick={() => {
@@ -85,19 +91,24 @@ function WorksLightbox({ works, centered = false }) {
           style={{
             display: "flex",
             flex: 1,
+            minWidth: 0,
+            minHeight: 0,
             width: "100%",
+            height: "100%",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
           <img
             alt={fullScreenWorkRecord.title || "artwork"}
+            loading="eager"
             style={{
-              width: "auto",
-              height: "100%",
-              maxHeight: "90vh",
               maxWidth: "100%",
+              maxHeight: "100%",
+              width: "auto",
+              height: "auto",
               objectFit: "contain",
+              display: "block",
             }}
             src={fullScreenWorkRecord.image?.src}
             className="rightArrowOnHover"
@@ -138,44 +149,35 @@ function WorksLightbox({ works, centered = false }) {
   return (
     <>
       <div
-        style={{
-          display: "flex",
-          direction: "row",
-          flexWrap: "wrap",
-          maxWidth: "100%",
-          gap: "32px",
-          ...(centered
-            ? { alignItems: "center", justifyContent: "center" }
-            : {}),
-        }}
+        className={
+          variant === "date"
+            ? "workMasonryGrid workMasonryGrid--datePage"
+            : "workMasonryGrid"
+        }
+        style={{ maxWidth: "100%" }}
       >
         {works.map((work, i) => {
           return (
             <div
               key={`work-${i}`}
-              className="mobileLightboxOuterImage clickable"
-              style={{
-                width: "200px",
-                height: "200px",
-                overflow: "hidden",
-              }}
+              className="workMasonryItem clickable"
               onClick={() => {
                 setFullScreenIndex(i);
               }}
             >
               <WorkImage
-                className="mobileLightboxInnerImage"
+                className="workImage"
                 alt={work.title || "artwork"}
-                sizes="(max-width: 860px) 100vw, 300px"
+                sizes="(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
                 image={work.image}
-                style={{
-                  width: "300px",
-                  height: "300px",
-                  marginLeft: "-50px",
-                  marginTop: "-50px",
-                  objectFit: "cover",
-                }}
               />
+              {variant === "date" && work.title && (
+                <div className="workMasonryItemCaption">
+                  <div style={{ textAlign: "center" }}>
+                    <i>{work.title}</i>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}

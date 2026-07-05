@@ -143,30 +143,6 @@ async function main() {
   };
   await writeJSON("about.json", about);
 
-  // -------------------------------------------------------------- Process
-  console.log("Fetching Process…");
-  let processPosts = [];
-  try {
-    const processRows = await fetchAll("Process");
-    for (const record of processRows) {
-      if (!record.get("Show On Page")) continue;
-      const images = [];
-      for (const att of record.get("Images") ?? []) {
-        const img = await firstImage([att]);
-        if (img) images.push(img);
-      }
-      processPosts.push({
-        title: record.get("Title") ?? null,
-        date: record.get("Date") ?? null,
-        text: record.get("Text") ?? null,
-        images,
-      });
-    }
-  } catch (err) {
-    console.warn(`  ! could not fetch Process table: ${err.message}`);
-  }
-  await writeJSON("process.json", processPosts);
-
   // ------------------------------------------------------------------- CV
   console.log("Fetching CV…");
   const cvRows = await fetchAll("CV");

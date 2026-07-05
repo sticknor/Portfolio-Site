@@ -20,6 +20,19 @@ const BLANK_GIF =
 ---
 
 <Layout title={about.siteTitle} ogImage={splash?.src}>
+  {
+    splash && (
+      <link
+        slot="head"
+        rel="preload"
+        as="image"
+        imagesrcset={splash.srcSet}
+        imagesizes="40vw"
+        fetchpriority="high"
+        media="(min-width: 861px)"
+      />
+    )
+  }
   <div>
     {
       splash && (
