@@ -1,0 +1,70 @@
+---
+import Navbar from "../components/Navbar.astro";
+import "../styles/global.css";
+
+const {
+  title = "Sam Ticknor",
+  description = "Sam Ticknor, Artist",
+  ogImage = undefined,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = ogImage ? new URL(ogImage, Astro.site) : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content={ogImageUrl ? "summary_large_image" : "summary"} />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Redirect old SPA hash URLs (samt.work/#/about) to real paths -->
+    <script is:inline>
+      if (window.location.hash.startsWith("#/")) {
+        var target = window.location.hash.slice(1);
+        if (target.toLowerCase() === "/cv") target = "/cv";
+        window.location.replace(target);
+      }
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-VLRMJ9YXXN"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-VLRMJ9YXXN");
+    </script>
+  </head>
+  <body>
+    <Navbar />
+    <slot />
+  </body>
+</html>

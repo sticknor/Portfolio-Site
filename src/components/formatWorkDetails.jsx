@@ -1,3 +1,5 @@
+import React from "react";
+
 const formatWorkInfoLine = (work) => {
   const height = work.height || undefined;
   const width = work.width || undefined;
@@ -20,24 +22,19 @@ const formatWorkInfoLine = (work) => {
   for (var i = 0; i < details.length; i++) {
     if (i === 0) {
       detailsLine.push(
-        <div>
+        <div key={`d${i}`}>
           <i>{details[i]}</i>
-        </div>
+        </div>,
       );
     } else {
-      detailsLine.push(<span>{details[i]}</span>);
+      detailsLine.push(<span key={`d${i}`}>{details[i]}</span>);
       if (i !== details.length - 1) {
-        detailsLine.push(<span>{" · "} </span>);
+        detailsLine.push(<span key={`s${i}`}>{" · "} </span>);
       }
     }
   }
-  return (
-    <div style={{ textAlign: "center" }}>
-      {detailsLine.map((i) => {
-        return i;
-      })}
-    </div>
-  );
+  if (detailsLine.length === 0) return null;
+  return <div style={{ textAlign: "center" }}>{detailsLine}</div>;
 };
 
 export { formatWorkInfoLine };
