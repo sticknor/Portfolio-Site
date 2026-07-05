@@ -1,0 +1,219 @@
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.6;
+  color: black;
+  font-family: "PT Serif", serif;
+  font-weight: 400;
+  font-style: normal;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 240) 0%,
+    rgb(246 254 255) 100%
+  );
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.clickable {
+  user-select: none;
+  cursor: pointer;
+}
+
+.clickable:hover {
+  opacity: 0.5 !important;
+}
+
+i {
+  font-style: italic;
+}
+
+b {
+  font-weight: bold;
+}
+
+img {
+  user-select: none;
+}
+
+a {
+  color: black;
+}
+
+iframe {
+  aspect-ratio: 16/9;
+}
+
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0px;
+  /* Remove scrollbar space */
+  background: transparent;
+  /* Optional: just make scrollbar invisible */
+}
+
+@media screen and (max-width: 860px) {
+  .mobileNav {
+    gap: 0px !important;
+    align-items: flex-start !important;
+    justify-content: space-around !important;
+    line-height: 1 !important;
+  }
+
+  .mobileStack {
+    display: flex;
+    flex-direction: column !important;
+  }
+
+  .mobileGap {
+    gap: 24px !important;
+  }
+
+  .mobileFullWidth {
+    width: 100% !important;
+  }
+
+  .mobileHide {
+    display: none !important;
+  }
+
+  .mobilePadding {
+    padding: 32px !important;
+  }
+
+  .mobilePaddingSmall {
+    padding: 16px !important;
+  }
+
+  .mobileLightboxOuterImage {
+    width: 100% !important;
+    height: auto !important;
+    padding: 40px 0px;
+  }
+
+  .mobileLightboxInnerImage {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    margin-left: 0px !important;
+    margin-top: 0px !important;
+  }
+}
+
+.upArrowOnHover:hover {
+  cursor: n-resize;
+}
+
+.leftArrowOnHover:hover {
+  cursor: w-resize;
+}
+
+.rightArrowOnHover:hover {
+  cursor: e-resize;
+}
+
+/* ////////////////// PAGE MODULE STYLES ///////////////////// */
+
+.pageModule {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.workImage {
+  max-height: 80vh;
+  max-width: 100%;
+  margin-bottom: 20px;
+  object-fit: contain;
+  height: auto;
+}
+
+.video {
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
+.imageWithTextModule .workImage,
+.textWithImageModule .workImage {
+  max-width: 80%;
+}
+
+.workText {
+  max-width: 80%;
+  margin-bottom: 10px;
+}
+
+@media screen and (max-width: 1100px) {
+  .pageModule {
+    margin-bottom: 30px !important;
+  }
+
+  .textWithImageModule,
+  .imageWithTextModule {
+    gap: 10px !important;
+  }
+
+  .imageWithTextModuleText {
+    align-items: center !important;
+    text-align: left !important;
+  }
+
+  .textModule {
+    align-items: center !important;
+    gap: 15px !important;
+  }
+
+  .textModule div {
+    max-width: 90% !important;
+    width: 90% !important;
+  }
+
+  .cascadeModule > div {
+    flex-direction: column !important;
+    gap: 30px !important;
+  }
+
+  .cascadeElement {
+    margin-top: 0px !important;
+    width: 100% !important;
+    align-self: center !important;
+  }
+
+  .gridModule > div {
+    flex-direction: column !important;
+    gap: 30px !important;
+  }
+
+  .gridElement {
+    margin-top: 0px !important;
+    width: 100% !important;
+    align-self: center !important;
+  }
+
+  .textWithImageModule {
+    flex-direction: column-reverse !important;
+  }
+
+  .workImage {
+    width: 80% !important;
+  }
+
+  .imageFullModule > .workImage,
+  .carouselModule .workImage {
+    width: 100% !important;
+    min-height: 30vh !important;
+  }
+
+  .pageModule.carouselModule div {
+    min-width: 70% !important;
+    width: 100% !important;
+    text-align: center;
+  }
+}

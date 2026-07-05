@@ -1,0 +1,39 @@
+---
+import Layout from "../layouts/Layout.astro";
+import about from "../data/about.json";
+import cv from "../data/cv.json";
+---
+
+<Layout title={`CV — ${about.siteTitle}`}>
+  <div style={{ marginTop: "64px" }}>
+    <div style={{ padding: "64px" }} class="mobilePadding">
+      {
+        cv.map(({ category, records }) => (
+          <div style={{ marginBottom: "64px" }}>
+            <div style={{ fontWeight: 600, marginBottom: "32px" }}>
+              {category}
+            </div>
+            {records.map((record) => (
+              <div style={{ marginBottom: "16px" }}>
+                <div>{record.line1}</div>
+                {record.line2 && <div style={{ opacity: 0.5 }}>{record.line2}</div>}
+                {record.line3 && <div style={{ opacity: 0.5 }}>{record.line3}</div>}
+                {record.line4 && <div style={{ opacity: 0.5 }}>{record.line4}</div>}
+                {record.link.url && (
+                  <a
+                    style={{ opacity: 0.5 }}
+                    target="_blank"
+                    rel="noreferrer"
+                    href={record.link.url}
+                  >
+                    {record.link.title || record.link.url}
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</Layout>

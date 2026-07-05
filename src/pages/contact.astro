@@ -1,0 +1,63 @@
+---
+import Layout from "../layouts/Layout.astro";
+import about from "../data/about.json";
+---
+
+<Layout title={`Contact — ${about.siteTitle}`}>
+  <div style={{ marginTop: "64px", minHeight: "100vh" }}>
+    <div
+      style={{
+        padding: "64px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "64px",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+      }}
+      class="mobileStack mobilePadding mobileGap"
+    >
+      <div>
+        To recieve the occasional studio update, such as exhibition
+        announcements and studio sales,
+        <br />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://airtable.com/appFu4bKxcQWPoN69/shrU6lsf5P4fqJlpj"
+          style={{ fontWeight: 600, textDecoration: "none" }}
+          class="clickable"
+        >
+          sign up for my mailing list
+        </a>
+      </div>
+
+      <div>
+        I'm on Instagram,
+        <br />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://www.instagram.com/sammytthebrave/"
+          style={{ fontWeight: 600, textDecoration: "none" }}
+          class="clickable"
+        >
+          @sammytthebrave
+        </a>
+      </div>
+
+      <div>
+        Email me with inquiries, opportunities, questions, greetings,
+        <br />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="mailto:srticknor@gmail.com"
+          style={{ fontWeight: 600, textDecoration: "none" }}
+          class="clickable"
+        >
+          srticknor@gmail.com
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>
