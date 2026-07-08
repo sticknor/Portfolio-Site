@@ -45,12 +45,9 @@ const ogImage = sections
             sortedDates.map((date) => (
               <a
                 href={`#${encodeURIComponent(date)}`}
-                style={{
-                  color: "black",
-                  fontWeight: 400,
-                  textDecoration: "none",
-                }}
-                class="clickable"
+                style={{ color: "black" }}
+                class="archiveYearNavLink clickable"
+                data-year={date}
               >
                 {date}
               </a>
@@ -73,3 +70,36 @@ const ogImage = sections
     </div>
   </div>
 </Layout>
+
+<script>
+  const ARCHIVE_NAV_OFFSET = 128;
+
+  function updateArchiveYearNav() {
+    const nav = document.querySelector(".pageDateCollectionsNavFixed");
+    if (!nav) return;
+
+    const links = [...nav.querySelectorAll("a.archiveYearNavLink")];
+    const sections = [...document.querySelectorAll(".archiveSection[id]")];
+    if (!links.length || !sections.length) return;
+
+    let activeId = sections[0].id;
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= ARCHIVE_NAV_OFFSET) {
+        activeId = section.id;
+      }
+    }
+
+    for (const link of links) {
+      const id = decodeURIComponent(link.getAttribute("href")?.slice(1) || "");
+      const active = id === activeId;
+      link.classList.toggle("archiveYearNavLink--active", active);
+      if (active) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
+    }
+  }
+
+  updateArchiveYearNav();
+  window.addEventListener("scroll", updateArchiveYearNav, { passive: true });
+  window.addEventListener("hashchange", updateArchiveYearNav);
+  window.addEventListener("load", updateArchiveYearNav);
+</script>

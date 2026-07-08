@@ -64,7 +64,7 @@ function SplashCarousel({ works, interval = 5000 }) {
               width={work.image.width}
               height={work.image.height}
               loading={i === 0 ? "eager" : "lazy"}
-              fetchpriority={i === 0 ? "high" : "auto"}
+              fetchPriority={i === 0 ? "high" : "auto"}
               decoding="async"
               style={{
                 width: "100%",

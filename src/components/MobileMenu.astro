@@ -1,0 +1,103 @@
+---
+import MenuTile from "./MenuTile.astro";
+import collections from "../data/collections.json";
+import dates from "../data/dates.json";
+import installations from "../data/installations.json";
+
+const { pathname } = Astro.props;
+
+const navLinks = [
+  { to: "/", label: "Works", keepMenuOpen: true },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+];
+
+const menuCollections = collections.filter((c) => c.showInMenu);
+const menuInstallations = installations.filter((i) => i.showInMenu);
+---
+
+<input type="checkbox" id="mobileMenuToggle" class="mobileMenuCheckbox" />
+<div class="mobileMenuPanel" role="dialog" aria-label="Site menu">
+  <nav class="mobileMenuNav" aria-label="Primary">
+    {
+      navLinks.map((link) => (
+        <a
+          class={pathname === link.to ? "" : "clickable"}
+          style={{
+            textDecoration: pathname === link.to ? "underline" : "none",
+            color: "black",
+            fontWeight: 600,
+          }}
+          href={link.keepMenuOpen ? "/?menu=1" : link.to}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="mobileMenuSections">
+    <div>
+      <span class="homeMenuHeading">Series:</span>
+      <div class="homeTileRow">
+        {
+          menuCollections.map((collection) => (
+            <MenuTile
+              href={`/${encodeURIComponent(collection.route)}`}
+              image={collection.image}
+              label={collection.title}
+              lines={[collection.years]}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <div>
+      <span class="homeMenuHeading">Installations:</span>
+      <div class="homeTileRow">
+        {
+          menuInstallations.map((installation) => (
+            <MenuTile
+              href={`/${encodeURIComponent(installation.route)}`}
+              image={installation.image}
+              label={installation.title}
+              lines={[installation.location, installation.dates]}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <div>
+      <span class="homeMenuHeading">Archive:</span>
+      <div class="homeTileRow">
+        {
+          dates.map((entry) => (
+            <MenuTile
+              href={`/archive#${encodeURIComponent(entry.date)}`}
+              image={entry.image}
+              label={entry.date}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("menu") !== "1") return;
+    var toggle = document.getElementById("mobileMenuToggle");
+    if (toggle) toggle.checked = true;
+    params.delete("menu");
+    var qs = params.toString();
+    history.replaceState(
+      null,
+      "",
+      window.location.pathname + (qs ? "?" + qs : "") + window.location.hash,
+    );
+  })();
+</script>

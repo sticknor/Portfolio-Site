@@ -152,21 +152,6 @@ iframe {
   gap: 64px;
 }
 
-/* Mobile menu disclosure — hidden on desktop, checkbox-driven on mobile */
-.homeMenuCheckbox {
-  display: none;
-}
-
-.homeMenuButton {
-  display: none;
-  font-weight: 600;
-  color: black;
-}
-
-.homeMenuButtonLabel-close {
-  display: none;
-}
-
 .homeMobileHighlights {
   display: none;
 }
@@ -176,30 +161,9 @@ iframe {
     width: 100%;
   }
 
-  .homeMenuButton {
-    display: block;
-  }
-
-  /* Menu collapsed until the checkbox is ticked */
+  /* Homepage tile menus live in the navbar mobile menu instead */
   .homeMenuSections {
     display: none;
-  }
-
-  .homeMenuCheckbox:checked ~ .homeMenuSections {
-    display: flex;
-  }
-
-  .homeMenuCheckbox:checked ~ .homeMenuButton .homeMenuButtonLabel-open,
-  .homeMenuButton .homeMenuButtonLabel-close {
-    display: none;
-  }
-
-  .homeMenuCheckbox:checked ~ .homeMenuButton .homeMenuButtonLabel-close {
-    display: inline;
-  }
-
-  .homeMenuButton .homeMenuButtonLabel-open {
-    display: inline;
   }
 
   /* Highlights quick-scroll stack */
@@ -213,6 +177,107 @@ iframe {
 @media (hover: hover) and (pointer: fine) {
   .upArrowOnHover:hover {
     cursor: n-resize;
+  }
+}
+
+/* ////////////////// SITE HEADER / MOBILE MENU ///////////////////// */
+
+.siteHeader {
+  position: relative;
+}
+
+.navbarBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: linear-gradient(
+    90deg,
+    rgb(255 255 240) 0%,
+    rgb(246 254 255) 100%
+  );
+  display: flex;
+  justify-content: flex-start;
+  z-index: 101;
+}
+
+.navbarLinks {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 32px;
+}
+
+.mobileMenuCheckbox {
+  display: none;
+}
+
+.mobileMenuButton,
+.mobileMenuPanel {
+  display: none;
+}
+
+@media screen and (max-width: 860px) {
+  .navbarLinks {
+    display: none;
+  }
+
+  .mobileMenuButton {
+    display: block;
+    margin-left: auto;
+    font-weight: 600;
+    color: black;
+    white-space: nowrap;
+  }
+
+  .mobileMenuButtonLabel-close {
+    display: none;
+  }
+
+  #mobileMenuToggle:checked ~ .navbarBar .mobileMenuButtonLabel-open {
+    display: none;
+  }
+
+  #mobileMenuToggle:checked ~ .navbarBar .mobileMenuButtonLabel-close {
+    display: inline;
+  }
+
+  .mobileMenuPanel {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(
+      90deg,
+      rgb(255 255 240) 0%,
+      rgb(246 254 255) 100%
+    );
+    z-index: 100;
+    padding: 32px;
+    box-sizing: border-box;
+  }
+
+  #mobileMenuToggle:checked ~ .mobileMenuPanel {
+    display: block;
+  }
+
+  .mobileMenuNav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .mobileMenuSections {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
   }
 }
 
@@ -309,6 +374,16 @@ iframe {
   align-items: flex-start;
   gap: 12px;
   margin: 0;
+}
+
+.archiveYearNavLink {
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.archiveYearNavLink--active {
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 @media screen and (min-width: 861px) {
