@@ -67,9 +67,9 @@ const BLANK_GIF =
         </label>
 
         <div class="homeMenuSections">
-          <!-- Thematic Collections -->
+          <!-- Series -->
           <div>
-            <span class="homeMenuHeading">Thematic Collections:</span>
+            <span class="homeMenuHeading">Series:</span>
             <div class="homeTileRow">
               {
                 menuCollections.map((collection) => (
@@ -78,22 +78,6 @@ const BLANK_GIF =
                     image={collection.image}
                     label={collection.title}
                     lines={[collection.years]}
-                  />
-                ))
-              }
-            </div>
-          </div>
-
-          <!-- Full Archive -->
-          <div>
-            <span class="homeMenuHeading">Full Archive:</span>
-            <div class="homeTileRow">
-              {
-                dates.map((entry) => (
-                  <MenuTile
-                    href={`/archive#${encodeURIComponent(entry.date)}`}
-                    image={entry.image}
-                    label={entry.date}
                   />
                 ))
               }
@@ -111,6 +95,22 @@ const BLANK_GIF =
                     image={installation.image}
                     label={installation.title}
                     lines={[installation.location, installation.dates]}
+                  />
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Archive -->
+          <div>
+            <span class="homeMenuHeading">Archive:</span>
+            <div class="homeTileRow">
+              {
+                dates.map((entry) => (
+                  <MenuTile
+                    href={`/archive#${encodeURIComponent(entry.date)}`}
+                    image={entry.image}
+                    label={entry.date}
                   />
                 ))
               }
