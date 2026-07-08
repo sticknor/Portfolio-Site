@@ -119,16 +119,6 @@ async function firstImage(attachments) {
   }
 }
 
-/** Process every attachment of a field (attachment order preserved). */
-async function allImages(attachments) {
-  const images = [];
-  for (const att of attachments ?? []) {
-    const img = await firstImage([att]);
-    if (img) images.push(img);
-  }
-  return images;
-}
-
 async function writeJSON(name, data) {
   const file = path.join(DATA_DIR, name);
   await fs.writeFile(file, JSON.stringify(data, null, 2));
@@ -139,21 +129,6 @@ async function main() {
   await fs.mkdir(CACHE_DIR, { recursive: true });
   await fs.mkdir(MEDIA_DIR, { recursive: true });
   await fs.mkdir(DATA_DIR, { recursive: true });
-
-  // ---------------------------------------------------------------- About
-  console.log("Fetching About…");
-  const aboutRows = await fetchAll("About");
-  const aboutRecord = aboutRows[aboutRows.length - 1];
-  const splashImages = await allImages(aboutRecord?.get("Splash Images"));
-  const about = {
-    siteTitle: aboutRecord?.get("Site Title") ?? "Sam Ticknor",
-    bio: aboutRecord?.get("Bio") ?? "",
-    showCV: Boolean(aboutRecord?.get("Show CV")),
-    bioImage: await firstImage(aboutRecord?.get("Bio Image")),
-    splashImage: splashImages[0] ?? null,
-    splashImages,
-  };
-  await writeJSON("about.json", about);
 
   // ------------------------------------------------------------------- CV
   console.log("Fetching CV…");
@@ -209,6 +184,37 @@ async function main() {
   }
   await writeJSON("works.json", works);
   await writeJSON("dateCollections.json", dateCollections);
+
+  // ---------------------------------------------------------------- About
+  // (after Works so "Splash Images" — a linked-records field into Works —
+  // can be resolved to full work objects with artwork info)
+  console.log("Fetching About…");
+  const aboutRows = await fetchAll("About");
+  const aboutRecord = aboutRows[aboutRows.length - 1];
+
+  const splashWorks = [];
+  for (const entry of aboutRecord?.get("Splash Images") ?? []) {
+    if (typeof entry === "string") {
+      // Linked Works record
+      const work = works[entry];
+      if (work?.image) splashWorks.push(work);
+      else console.warn(`  ! splash work ${entry} missing or has no image`);
+    } else if (entry?.url) {
+      // Legacy attachment (no artwork info)
+      const image = await firstImage([entry]);
+      if (image) splashWorks.push({ image });
+    }
+  }
+
+  const about = {
+    siteTitle: aboutRecord?.get("Site Title") ?? "Sam Ticknor",
+    bio: aboutRecord?.get("Bio") ?? "",
+    showCV: Boolean(aboutRecord?.get("Show CV")),
+    bioImage: await firstImage(aboutRecord?.get("Bio Image")),
+    splashImage: splashWorks[0]?.image ?? null,
+    splashWorks,
+  };
+  await writeJSON("about.json", about);
 
   // ---------------------------------------------------- Collections Index
   console.log("Fetching Collections Index…");

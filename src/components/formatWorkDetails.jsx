@@ -37,4 +37,7 @@ const formatWorkInfoLine = (work) => {
   return <div style={{ textAlign: "center" }}>{detailsLine}</div>;
 };
 
-export { formatWorkInfoLine };
+// Component form, so Astro templates can render the caption statically.
+const WorkInfoLine = ({ work }) => formatWorkInfoLine(work);
+
+export { formatWorkInfoLine, WorkInfoLine };

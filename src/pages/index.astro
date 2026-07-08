@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import MenuTile from "../components/MenuTile.astro";
 import SplashCarousel from "../components/SplashCarousel.jsx";
+import { WorkInfoLine } from "../components/formatWorkDetails.jsx";
 import about from "../data/about.json";
 import collections from "../data/collections.json";
 import dates from "../data/dates.json";
@@ -9,8 +10,8 @@ import installations from "../data/installations.json";
 
 const menuCollections = collections.filter((c) => c.showInMenu);
 const menuInstallations = installations.filter((i) => i.showInMenu);
-const splashImages = about.splashImages ?? [];
-const firstSplash = splashImages[0];
+const splashWorks = about.splashWorks ?? [];
+const firstSplash = splashWorks[0]?.image;
 
 // A 1x1 transparent gif, used in <picture> sources so each viewport only
 // downloads the splash treatment it actually shows.
@@ -34,11 +35,11 @@ const BLANK_GIF =
   }
   <div>
     {
-      splashImages.length > 0 && (
+      splashWorks.length > 0 && (
         <div class="homeSplashPane mobileHide">
           <SplashCarousel
             client:media="(min-width: 861px)"
-            images={splashImages}
+            works={splashWorks}
           />
         </div>
       )
@@ -119,28 +120,46 @@ const BLANK_GIF =
 
         <!-- Mobile: highlights as a quick-scroll vertical stack -->
         {
-          splashImages.length > 0 && (
+          splashWorks.length > 0 && (
             <div class="homeMobileHighlights">
-              {splashImages.map((image, i) => (
-                <picture>
-                  {/* Desktop never downloads these (carousel shows them instead) */}
-                  <source media="(min-width: 861px)" srcset={BLANK_GIF} />
-                  <source
-                    media="(max-width: 860px)"
-                    srcset={image.srcSet}
-                    sizes="100vw"
-                  />
-                  <img
-                    alt={`Highlighted artwork ${i + 1} by Sam Ticknor`}
-                    src={image.src}
-                    width={image.width}
-                    height={image.height}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    fetchpriority={i === 0 ? "high" : "auto"}
-                    decoding="async"
-                    style={{ width: "100%", height: "auto", display: "block" }}
-                  />
-                </picture>
+              {splashWorks.map((work, i) => (
+                <div>
+                  <picture>
+                    {/* Desktop never downloads these (carousel shows them instead) */}
+                    <source media="(min-width: 861px)" srcset={BLANK_GIF} />
+                    <source
+                      media="(max-width: 860px)"
+                      srcset={work.image.srcSet}
+                      sizes="100vw"
+                    />
+                    <img
+                      alt={
+                        work.title ||
+                        `Highlighted artwork ${i + 1} by Sam Ticknor`
+                      }
+                      src={work.image.src}
+                      width={work.image.width}
+                      height={work.image.height}
+                      loading={i === 0 ? "eager" : "lazy"}
+                      fetchpriority={i === 0 ? "high" : "auto"}
+                      decoding="async"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        display: "block",
+                      }}
+                    />
+                  </picture>
+                  <div
+                    style={{
+                      marginTop: "12px",
+                      fontSize: "14px",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    <WorkInfoLine work={work} />
+                  </div>
+                </div>
               ))}
             </div>
           )
