@@ -1,0 +1,75 @@
+---
+import Layout from "../layouts/Layout.astro";
+import WorksLightbox from "../components/WorksLightbox.jsx";
+import about from "../data/about.json";
+import works from "../data/works.json";
+import dateCollections from "../data/dateCollections.json";
+
+// Newest first (2025, 2024, 2022-2023, …)
+const sortedDates = Object.keys(dateCollections).sort((a, b) =>
+  b.localeCompare(a, undefined, { numeric: true }),
+);
+
+const sections = sortedDates.map((date) => ({
+  id: date,
+  heading: date,
+  works: dateCollections[date].map((id) => works[id]).filter(Boolean),
+}));
+
+const ogImage = sections
+  .flatMap((s) => s.works)
+  .find((w) => w.image)?.image?.src;
+---
+
+<Layout title={`Full Archive — ${about.siteTitle}`} ogImage={ogImage}>
+  <div style={{ marginTop: "64px", backgroundColor: "#fff" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        padding: "64px",
+        flex: 1,
+        gap: "64px",
+      }}
+      class="mobileStack mobilePadding mobileGap"
+    >
+      <div class="pageDateCollectionsNavSlot">
+        {/* Invisible copy reserves layout space for the fixed nav */}
+        <div class="pageDateCollectionsNavMeasure" aria-hidden="true">
+          <nav>
+            {sortedDates.map((date) => <span>{date}</span>)}
+          </nav>
+        </div>
+        <nav class="pageDateCollectionsNavFixed" aria-label="Jump to year">
+          {
+            sortedDates.map((date) => (
+              <a
+                href={`#${encodeURIComponent(date)}`}
+                style={{
+                  color: "black",
+                  fontWeight: 400,
+                  textDecoration: "none",
+                }}
+                class="clickable"
+              >
+                {date}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+      <div
+        class="pageDateCollectionsContent"
+        style={{
+          height: "100%",
+          flex: "1 1 0",
+          minWidth: 0,
+          display: "flex",
+          overflow: "visible",
+        }}
+      >
+        <WorksLightbox client:load sections={sections} variant="date" />
+      </div>
+    </div>
+  </div>
+</Layout>

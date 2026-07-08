@@ -1,33 +1,32 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import HomeMenus from "../components/HomeMenus.jsx";
+import MenuTile from "../components/MenuTile.astro";
+import SplashCarousel from "../components/SplashCarousel.jsx";
 import about from "../data/about.json";
 import collections from "../data/collections.json";
-import dateCollections from "../data/dateCollections.json";
+import dates from "../data/dates.json";
 import installations from "../data/installations.json";
 
-const menuCollections = collections
-  .filter((c) => c.showInMenu)
-  .map(({ route, title, years }) => ({ route, title, years }));
-const menuDates = Object.keys(dateCollections).sort().reverse();
+const menuCollections = collections.filter((c) => c.showInMenu);
 const menuInstallations = installations.filter((i) => i.showInMenu);
-const splash = about.splashImage;
+const splashImages = about.splashImages ?? [];
+const firstSplash = splashImages[0];
 
-// A 1x1 transparent gif: matched by the mobile <source> so phones never
-// download the splash image (its container is display:none on mobile).
+// A 1x1 transparent gif, used in <picture> sources so each viewport only
+// downloads the splash treatment it actually shows.
 const BLANK_GIF =
   "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
 ---
 
-<Layout title={about.siteTitle} ogImage={splash?.src}>
+<Layout title={about.siteTitle} ogImage={firstSplash?.src}>
   {
-    splash && (
+    firstSplash && (
       <link
         slot="head"
         rel="preload"
         as="image"
-        imagesrcset={splash.srcSet}
-        imagesizes="40vw"
+        imagesrcset={firstSplash.srcSet}
+        imagesizes="55vw"
         fetchpriority="high"
         media="(min-width: 861px)"
       />
@@ -35,46 +34,18 @@ const BLANK_GIF =
   }
   <div>
     {
-      splash && (
-        <div
-          class="mobileHide"
-          style={{
-            position: "fixed",
-            top: "0px",
-            right: "0px",
-            bottom: "0px",
-            width: "40vw",
-            zIndex: 200,
-          }}
-        >
-          <picture>
-            <source media="(max-width: 860px)" srcset={BLANK_GIF} />
-            <source
-              media="(min-width: 861px)"
-              srcset={splash.srcSet}
-              sizes="40vw"
-            />
-            <img
-              alt="A splashy introduction to the artwork of Sam Ticknor"
-              src={splash.src}
-              width={splash.width}
-              height={splash.height}
-              fetchpriority="high"
-              decoding="async"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "top center",
-              }}
-            />
-          </picture>
+      splashImages.length > 0 && (
+        <div class="homeSplashPane mobileHide">
+          <SplashCarousel
+            client:media="(min-width: 861px)"
+            images={splashImages}
+          />
         </div>
       )
     }
 
-    <!-- Menus on Left -->
-    <div style={{ width: "60vw" }} class="mobileFullWidth">
+    <!-- Menus on Left (desktop) / collapsible menu + stacked highlights (mobile) -->
+    <div class="homeContent mobileFullWidth">
       <div
         class="mobilePadding"
         style={{
@@ -87,122 +58,93 @@ const BLANK_GIF =
           flexDirection: "column",
         }}
       >
-        <HomeMenus
-          client:load
-          collections={menuCollections}
-          dates={menuDates}
-        />
+        <!-- Mobile-only menu disclosure (CSS checkbox toggle, no JS) -->
+        <input type="checkbox" id="homeMenuToggle" class="homeMenuCheckbox" />
+        <label for="homeMenuToggle" class="homeMenuButton clickable">
+          <span class="homeMenuButtonLabel-open">Menu +</span>
+          <span class="homeMenuButtonLabel-close">Menu −</span>
+        </label>
 
-        <!-- Installations Menu -->
-        <div>
-          <span
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              fontWeight: 600,
-              marginBottom: "32px",
-              color: "#999",
-            }}
-          >
-            Installations:
-          </span>
-          <div
-            style={{
-              display: "flex",
-              flex: 1,
-              alignItems: "space-between",
-              flexDirection: "row",
-              gap: "32px",
-              flexWrap: "wrap",
-              maxWidth: "786px",
-            }}
-          >
-            {
-              menuInstallations.map((installation, index) => (
-                <a
-                  style={{
-                    width: "230px",
-                    aspectRatio: "3/2",
-                    position: "relative",
-                    textDecoration: "none",
-                  }}
-                  href={`/${encodeURIComponent(installation.route)}`}
-                  class="mobileFullWidth"
-                >
-                  {installation.image && (
-                    <img
-                      alt={`${installation.title} installation preview`}
-                      src={installation.image.src}
-                      srcset={installation.image.srcSet}
-                      sizes="(max-width: 860px) 100vw, 230px"
-                      width={installation.image.width}
-                      height={installation.image.height}
-                      loading={index === 0 ? "eager" : "lazy"}
-                      fetchpriority={index === 0 ? "high" : "auto"}
-                      decoding="async"
-                      style={{
-                        position: "absolute",
-                        top: "0px",
-                        bottom: "0px",
-                        left: "0px",
-                        right: "0px",
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  )}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "0px",
-                      bottom: "0px",
-                      left: "0px",
-                      right: "0px",
-                      width: "100%",
-                      height: "100%",
-                      background:
-                        "linear-gradient(to right, rgba(0, 0, 0, .8), rgba(0, 0, 0, .1))",
-                    }}
+        <div class="homeMenuSections">
+          <!-- Thematic Collections -->
+          <div>
+            <span class="homeMenuHeading">Thematic Collections:</span>
+            <div class="homeTileRow">
+              {
+                menuCollections.map((collection) => (
+                  <MenuTile
+                    href={`/${encodeURIComponent(collection.route)}`}
+                    image={collection.image}
+                    label={collection.title}
+                    lines={[collection.years]}
                   />
-                  <div
-                    style={{
-                      display: "flex",
-                      flex: 1,
-                      flexDirection: "column",
-                      height: "100%",
-                    }}
-                    class="clickable"
-                  >
-                    <div
-                      style={{
-                        color: "white",
-                        zIndex: 2,
-                        padding: "16px 16px 16px 16px",
-                        lineHeight: 1.5,
-                        display: "flex",
-                        flex: 1,
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        gap: "8px",
-                      }}
-                    >
-                      <div style={{ fontWeight: 600 }}>
-                        {installation.title}
-                      </div>
-                      <div>
-                        {installation.location && (
-                          <div>{installation.location}</div>
-                        )}
-                        {installation.dates && <div>{installation.dates}</div>}
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              ))
-            }
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Full Archive -->
+          <div>
+            <span class="homeMenuHeading">Full Archive:</span>
+            <div class="homeTileRow">
+              {
+                dates.map((entry) => (
+                  <MenuTile
+                    href={`/archive#${encodeURIComponent(entry.date)}`}
+                    image={entry.image}
+                    label={entry.date}
+                  />
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Installations -->
+          <div>
+            <span class="homeMenuHeading">Installations:</span>
+            <div class="homeTileRow">
+              {
+                menuInstallations.map((installation) => (
+                  <MenuTile
+                    href={`/${encodeURIComponent(installation.route)}`}
+                    image={installation.image}
+                    label={installation.title}
+                    lines={[installation.location, installation.dates]}
+                  />
+                ))
+              }
+            </div>
           </div>
         </div>
+
+        <!-- Mobile: highlights as a quick-scroll vertical stack -->
+        {
+          splashImages.length > 0 && (
+            <div class="homeMobileHighlights">
+              {splashImages.map((image, i) => (
+                <picture>
+                  {/* Desktop never downloads these (carousel shows them instead) */}
+                  <source media="(min-width: 861px)" srcset={BLANK_GIF} />
+                  <source
+                    media="(max-width: 860px)"
+                    srcset={image.srcSet}
+                    sizes="100vw"
+                  />
+                  <img
+                    alt={`Highlighted artwork ${i + 1} by Sam Ticknor`}
+                    src={image.src}
+                    width={image.width}
+                    height={image.height}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    fetchpriority={i === 0 ? "high" : "auto"}
+                    decoding="async"
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                  />
+                </picture>
+              ))}
+            </div>
+          )
+        }
       </div>
     </div>
   </div>

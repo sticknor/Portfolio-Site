@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -24,8 +28,15 @@ body {
   cursor: pointer;
 }
 
-.clickable:hover {
-  opacity: 0.5 !important;
+/*
+ * Hover feedback only on devices with a real pointer. Touch browsers emulate
+ * :hover and leave it stuck on the last-tapped element (e.g. a work tile
+ * still looking "pressed" after closing the lightbox).
+ */
+@media (hover: hover) and (pointer: fine) {
+  .clickable:hover {
+    opacity: 0.5 !important;
+  }
 }
 
 i {
@@ -104,8 +115,105 @@ iframe {
   }
 }
 
-.upArrowOnHover:hover {
-  cursor: n-resize;
+/* ////////////////// HOMEPAGE ///////////////////// */
+
+/* Desktop splash carousel pane, fixed to the right edge */
+.homeSplashPane {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 55vw;
+  z-index: 200;
+}
+
+.homeContent {
+  width: 45vw;
+}
+
+.homeMenuHeading {
+  display: flex;
+  flex-direction: row;
+  font-weight: 600;
+  margin-bottom: 32px;
+  color: #999;
+}
+
+.homeTileRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 32px;
+  max-width: 786px;
+}
+
+.homeMenuSections {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+/* Mobile menu disclosure — hidden on desktop, checkbox-driven on mobile */
+.homeMenuCheckbox {
+  display: none;
+}
+
+.homeMenuButton {
+  display: none;
+  font-weight: 600;
+  color: black;
+}
+
+.homeMenuButtonLabel-close {
+  display: none;
+}
+
+.homeMobileHighlights {
+  display: none;
+}
+
+@media screen and (max-width: 860px) {
+  .homeContent {
+    width: 100%;
+  }
+
+  .homeMenuButton {
+    display: block;
+  }
+
+  /* Menu collapsed until the checkbox is ticked */
+  .homeMenuSections {
+    display: none;
+  }
+
+  .homeMenuCheckbox:checked ~ .homeMenuSections {
+    display: flex;
+  }
+
+  .homeMenuCheckbox:checked ~ .homeMenuButton .homeMenuButtonLabel-open,
+  .homeMenuButton .homeMenuButtonLabel-close {
+    display: none;
+  }
+
+  .homeMenuCheckbox:checked ~ .homeMenuButton .homeMenuButtonLabel-close {
+    display: inline;
+  }
+
+  .homeMenuButton .homeMenuButtonLabel-open {
+    display: inline;
+  }
+
+  /* Highlights quick-scroll stack */
+  .homeMobileHighlights {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .upArrowOnHover:hover {
+    cursor: n-resize;
+  }
 }
 
 /* Masonry image grids — natural aspect ratios, no square crops */
@@ -163,6 +271,23 @@ iframe {
   font-size: 15px;
   line-height: 1.45;
   max-width: 100%;
+}
+
+/* Full Archive: anchored year sections in one continuous scroll */
+.archiveSection {
+  /* Anchor jumps clear the fixed navbar (64px) plus breathing room */
+  scroll-margin-top: 96px;
+  margin-bottom: 96px;
+}
+
+.archiveSection:last-child {
+  margin-bottom: 0;
+}
+
+.archiveSectionHeading {
+  font-weight: 600;
+  color: #999;
+  margin-bottom: 32px;
 }
 
 /* Date page: lock year menu to viewport (sticky scrolls until top; fixed does not) */
@@ -284,12 +409,14 @@ iframe {
   }
 }
 
-.leftArrowOnHover:hover {
-  cursor: w-resize;
-}
+@media (hover: hover) and (pointer: fine) {
+  .leftArrowOnHover:hover {
+    cursor: w-resize;
+  }
 
-.rightArrowOnHover:hover {
-  cursor: e-resize;
+  .rightArrowOnHover:hover {
+    cursor: e-resize;
+  }
 }
 
 /* ////////////////// PAGE MODULE STYLES ///////////////////// */

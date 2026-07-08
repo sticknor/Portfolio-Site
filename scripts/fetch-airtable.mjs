@@ -119,6 +119,16 @@ async function firstImage(attachments) {
   }
 }
 
+/** Process every attachment of a field (attachment order preserved). */
+async function allImages(attachments) {
+  const images = [];
+  for (const att of attachments ?? []) {
+    const img = await firstImage([att]);
+    if (img) images.push(img);
+  }
+  return images;
+}
+
 async function writeJSON(name, data) {
   const file = path.join(DATA_DIR, name);
   await fs.writeFile(file, JSON.stringify(data, null, 2));
@@ -134,12 +144,14 @@ async function main() {
   console.log("Fetching About…");
   const aboutRows = await fetchAll("About");
   const aboutRecord = aboutRows[aboutRows.length - 1];
+  const splashImages = await allImages(aboutRecord?.get("Splash Images"));
   const about = {
     siteTitle: aboutRecord?.get("Site Title") ?? "Sam Ticknor",
     bio: aboutRecord?.get("Bio") ?? "",
     showCV: Boolean(aboutRecord?.get("Show CV")),
     bioImage: await firstImage(aboutRecord?.get("Bio Image")),
-    splashImage: await firstImage(aboutRecord?.get("Splash Images")),
+    splashImage: splashImages[0] ?? null,
+    splashImages,
   };
   await writeJSON("about.json", about);
 
@@ -215,16 +227,55 @@ async function main() {
     } catch (err) {
       console.warn(`  ! could not fetch collection table "${route}": ${err.message}`);
     }
+    // Curated tile image; falls back to the collection's first work image.
+    let image = await firstImage(record.get("Image"));
+    if (!image) {
+      const firstWorkWithImage = workIds.find((id) => works[id]?.image);
+      image = firstWorkWithImage ? works[firstWorkWithImage].image : null;
+    }
     collections.push({
       route,
       title: record.get("Title") ?? route,
       showInMenu: Boolean(record.get("Show In Menu")),
       years: record.get("Years") ?? null,
       collectionStatement: record.get("Collection Statement") ?? null,
+      image,
       workIds,
     });
   }
   await writeJSON("collections.json", collections);
+
+  // ------------------------------------------------------------ Dates Index
+  // Optional curation table (like Installations Index): one row per year
+  // group with a "Date" text column matching Works "Date Collection" values
+  // and an "Image" attachment for the Full Archive tile. Any date missing a
+  // curated image falls back to the first work of that year.
+  console.log("Fetching Dates Index…");
+  const curatedDateImages = new Map();
+  try {
+    const dateRows = await fetchAll("Dates Index");
+    for (const record of dateRows) {
+      const date = record.get("Date");
+      if (!date) continue;
+      const image = await firstImage(record.get("Image"));
+      if (image) curatedDateImages.set(String(date), image);
+    }
+  } catch (err) {
+    console.warn(`  ! could not fetch Dates Index table: ${err.message}`);
+  }
+  const dates = Object.keys(dateCollections)
+    .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }))
+    .map((date) => {
+      let image = curatedDateImages.get(date) ?? null;
+      if (!image) {
+        const firstWorkWithImage = dateCollections[date].find(
+          (id) => works[id]?.image,
+        );
+        image = firstWorkWithImage ? works[firstWorkWithImage].image : null;
+      }
+      return { date, image };
+    });
+  await writeJSON("dates.json", dates);
 
   // -------------------------------------------------- Installations Index
   console.log("Fetching Installations Index…");

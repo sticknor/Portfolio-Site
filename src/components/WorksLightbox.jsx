@@ -3,13 +3,21 @@ import { formatWorkInfoLine } from "./formatWorkDetails.jsx";
 import WorkImage from "./WorkImage.jsx";
 
 /**
- * Masonry grid of work thumbnails with a full-screen lightbox
+ * Masonry grid(s) of work thumbnails with a full-screen lightbox
  * (keyboard + touch-swipe navigation). Interactive island.
+ *
+ * Two ways to feed it:
+ *   works    — a flat list rendered as a single grid (collection pages)
+ *   sections — [{ id, heading, works }] rendered as anchored sections that
+ *              share one continuous lightbox (the /archive page)
  *
  * variant "collection": CSS multi-column masonry.
  * variant "date": CSS grid (source order matches reading order) with captions.
  */
-function WorksLightbox({ works, variant = "collection" }) {
+function WorksLightbox({ works, sections, variant = "collection" }) {
+  const sectionList = sections ?? [{ id: undefined, heading: undefined, works }];
+  const allWorks = sectionList.flatMap((section) => section.works);
+
   const [fullScreenIndex, setFullScreenIndex] = useState(undefined);
   const lightboxRef = useRef(null);
 
@@ -26,10 +34,14 @@ function WorksLightbox({ works, variant = "collection" }) {
 
   const handleTouchEnd = () => {
     if (touchStart - touchEnd > 50) {
-      setFullScreenIndex((fullScreenIndex + 1 + works.length) % works.length);
+      setFullScreenIndex(
+        (fullScreenIndex + 1 + allWorks.length) % allWorks.length,
+      );
     }
     if (touchStart - touchEnd < -50) {
-      setFullScreenIndex((fullScreenIndex - 1 + works.length) % works.length);
+      setFullScreenIndex(
+        (fullScreenIndex - 1 + allWorks.length) % allWorks.length,
+      );
     }
   };
 
@@ -44,16 +56,20 @@ function WorksLightbox({ works, variant = "collection" }) {
       setFullScreenIndex(undefined);
     } else if (e.key === " " || e.key === "ArrowRight") {
       e.preventDefault();
-      setFullScreenIndex((fullScreenIndex + 1 + works.length) % works.length);
+      setFullScreenIndex(
+        (fullScreenIndex + 1 + allWorks.length) % allWorks.length,
+      );
     } else if (e.key === "ArrowLeft") {
-      setFullScreenIndex((fullScreenIndex - 1 + works.length) % works.length);
+      setFullScreenIndex(
+        (fullScreenIndex - 1 + allWorks.length) % allWorks.length,
+      );
     }
   };
 
   let fullScreenLightbox;
 
   if (fullScreenIndex !== undefined) {
-    const fullScreenWorkRecord = works[fullScreenIndex];
+    const fullScreenWorkRecord = allWorks[fullScreenIndex];
 
     fullScreenLightbox = (
       <div
@@ -115,7 +131,7 @@ function WorksLightbox({ works, variant = "collection" }) {
             onClick={(e) => {
               e.stopPropagation();
               setFullScreenIndex(
-                (fullScreenIndex + 1 + works.length) % works.length,
+                (fullScreenIndex + 1 + allWorks.length) % allWorks.length,
               );
             }}
           />
@@ -146,39 +162,59 @@ function WorksLightbox({ works, variant = "collection" }) {
     );
   }
 
+  let indexOffset = 0;
+
   return (
     <>
-      <div
-        className={
-          variant === "date"
-            ? "workMasonryGrid workMasonryGrid--datePage"
-            : "workMasonryGrid"
-        }
-        style={{ maxWidth: "100%" }}
-      >
-        {works.map((work, i) => {
+      <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+        {sectionList.map((section) => {
+          const baseIndex = indexOffset;
+          indexOffset += section.works.length;
           return (
-            <div
-              key={`work-${i}`}
-              className="workMasonryItem clickable"
-              onClick={() => {
-                setFullScreenIndex(i);
-              }}
+            <section
+              key={section.id ?? "grid"}
+              id={section.id}
+              className={section.id !== undefined ? "archiveSection" : undefined}
             >
-              <WorkImage
-                className="workImage"
-                alt={work.title || "artwork"}
-                sizes="(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                image={work.image}
-              />
-              {variant === "date" && work.title && (
-                <div className="workMasonryItemCaption">
-                  <div style={{ textAlign: "center" }}>
-                    <i>{work.title}</i>
-                  </div>
-                </div>
+              {section.heading && (
+                <div className="archiveSectionHeading">{section.heading}</div>
               )}
-            </div>
+              <div
+                className={
+                  variant === "date"
+                    ? "workMasonryGrid workMasonryGrid--datePage"
+                    : "workMasonryGrid"
+                }
+                style={{ maxWidth: "100%" }}
+              >
+                {section.works.map((work, i) => {
+                  const globalIndex = baseIndex + i;
+                  return (
+                    <div
+                      key={`work-${globalIndex}`}
+                      className="workMasonryItem clickable"
+                      onClick={() => {
+                        setFullScreenIndex(globalIndex);
+                      }}
+                    >
+                      <WorkImage
+                        className="workImage"
+                        alt={work.title || "artwork"}
+                        sizes="(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                        image={work.image}
+                      />
+                      {variant === "date" && work.title && (
+                        <div className="workMasonryItemCaption">
+                          <div style={{ textAlign: "center" }}>
+                            <i>{work.title}</i>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
           );
         })}
       </div>

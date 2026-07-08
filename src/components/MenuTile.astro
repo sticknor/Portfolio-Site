@@ -1,0 +1,84 @@
+---
+/**
+ * Image tile link used by the homepage menus (Thematic Collections,
+ * Full Archive, Installations). Cover-cropped 3:2 card with a gradient
+ * and overlaid label, matching the original installation cards.
+ */
+const { href, image, label, lines = [], eager = false } = Astro.props;
+---
+
+<a
+  style={{
+    width: "100%",
+    aspectRatio: "3/2",
+    position: "relative",
+    textDecoration: "none",
+    display: "block",
+  }}
+  href={href}
+>
+  {
+    image && (
+      <img
+        alt={`${label} preview`}
+        src={image.src}
+        srcset={image.srcSet}
+        sizes="(max-width: 860px) 100vw, 230px"
+        width={image.width}
+        height={image.height}
+        loading={eager ? "eager" : "lazy"}
+        fetchpriority={eager ? "high" : "auto"}
+        decoding="async"
+        style={{
+          position: "absolute",
+          top: "0px",
+          bottom: "0px",
+          left: "0px",
+          right: "0px",
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+    )
+  }
+  <div
+    style={{
+      position: "absolute",
+      top: "0px",
+      bottom: "0px",
+      left: "0px",
+      right: "0px",
+      width: "100%",
+      height: "100%",
+      background:
+        "linear-gradient(to right, rgba(0, 0, 0, .8), rgba(0, 0, 0, .1))",
+    }}
+  />
+  <div
+    style={{
+      display: "flex",
+      flex: 1,
+      flexDirection: "column",
+      height: "100%",
+    }}
+    class="clickable"
+  >
+    <div
+      style={{
+        color: "white",
+        zIndex: 2,
+        padding: "16px 16px 16px 16px",
+        lineHeight: 1.5,
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-between",
+        gap: "8px",
+      }}
+    >
+      <div style={{ fontWeight: 600 }}>{label}</div>
+      <div>{lines.filter(Boolean).map((line) => <div>{line}</div>)}</div>
+    </div>
+  </div>
+</a>
