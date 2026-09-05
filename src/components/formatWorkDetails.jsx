@@ -1,43 +1,75 @@
 import React from "react";
 
-const formatWorkInfoLine = (work) => {
+/** Height × width [× depth] in — art-world order. */
+function formatWorkDimensions(work) {
   const height = work.height || undefined;
   const width = work.width || undefined;
   const depth = work.depth || undefined;
-  const title = work.title || undefined;
-  const medium = work.medium || undefined;
+  if (height && width && depth) return `${height} × ${width} × ${depth} in`;
+  if (height && width) return `${height} × ${width} in`;
+  if (height) return `${height} in`;
+  if (width) return `${width} in`;
+  return undefined;
+}
+
+/** Mediums are shown lowercase sitewide (e.g. "acrylic ink on paper"). */
+function formatWorkMedium(medium) {
+  if (!medium) return undefined;
+  return String(medium).toLowerCase();
+}
+
+/** Plain-text caption for alt attributes and accessibility. */
+function formatWorkAltText(work) {
+  const parts = [
+    work.title?.trim(),
+    work.year,
+    formatWorkMedium(work.medium),
+    formatWorkDimensions(work),
+  ].filter(Boolean);
+  return parts.length ? parts.join(", ") : "artwork";
+}
+
+/**
+ * Shared caption: Title · Year · medium · H × W in
+ * Title is italic (.title); everything else roman.
+ */
+function WorkCaption({ work, as: Tag = "div", className = "work__caption" }) {
+  const title = work.title?.trim() || undefined;
   const year = work.year || undefined;
+  const medium = formatWorkMedium(work.medium);
+  const dimensions = formatWorkDimensions(work);
+  const rest = [year, medium, dimensions].filter(Boolean);
 
-  var dimensionsString = undefined;
-  if (width && height && depth)
-    dimensionsString = `${width}" × ${height} × ${depth}"`;
-  else if (width && height) dimensionsString = `${width}" × ${height}"`;
+  if (!title && rest.length === 0) return null;
 
-  var details = [title, year, medium, dimensionsString];
-  details = details.filter((element) => {
-    return element !== undefined;
-  });
-  var detailsLine = [];
+  return (
+    <Tag className={className}>
+      {title && <span className="title">{title}</span>}
+      {title && rest.length > 0 && " · "}
+      {rest.map((part, i) => (
+        <React.Fragment key={`${part}-${i}`}>
+          {i > 0 && " · "}
+          {part}
+        </React.Fragment>
+      ))}
+    </Tag>
+  );
+}
 
-  for (var i = 0; i < details.length; i++) {
-    if (i === 0) {
-      detailsLine.push(
-        <div key={`d${i}`}>
-          <i>{details[i]}</i>
-        </div>,
-      );
-    } else {
-      detailsLine.push(<span key={`d${i}`}>{details[i]}</span>);
-      if (i !== details.length - 1) {
-        detailsLine.push(<span key={`s${i}`}>{" · "} </span>);
-      }
-    }
-  }
-  if (detailsLine.length === 0) return null;
-  return <div style={{ textAlign: "center" }}>{detailsLine}</div>;
-};
+const formatWorkInfoLine = (work) => <WorkCaption work={work} />;
+
+/** Lightbox caption — same format/rules as grid captions. */
+const formatWorkLightboxCaption = (work) => (
+  <WorkCaption work={work} className="work__caption workLightboxCaptionText" />
+);
 
 // Component form, so Astro templates can render the caption statically.
 const WorkInfoLine = ({ work }) => formatWorkInfoLine(work);
 
-export { formatWorkInfoLine, WorkInfoLine };
+export {
+  formatWorkAltText,
+  formatWorkInfoLine,
+  formatWorkLightboxCaption,
+  WorkCaption,
+  WorkInfoLine,
+};

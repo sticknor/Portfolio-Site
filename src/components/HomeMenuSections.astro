@@ -1,0 +1,58 @@
+---
+import MenuTile from "./MenuTile.astro";
+import collections from "../data/collections.json";
+import dates from "../data/dates.json";
+import installations from "../data/installations.json";
+
+const menuCollections = collections.filter((c) => c.showInMenu);
+const menuInstallations = installations.filter((i) => i.showInMenu);
+---
+
+<div class="homeMenuSections">
+  <div>
+    <span class="homeMenuHeading">Collections:</span>
+    <div class="homeTileRow">
+      {
+        menuCollections.map((collection) => (
+          <MenuTile
+            href={`/${encodeURIComponent(collection.route)}`}
+            image={collection.image}
+            label={collection.title}
+            lines={[collection.years]}
+          />
+        ))
+      }
+    </div>
+  </div>
+
+  <div>
+    <span class="homeMenuHeading">Installations:</span>
+    <div class="homeTileRow">
+      {
+        menuInstallations.map((installation) => (
+          <MenuTile
+            href={`/${encodeURIComponent(installation.route)}`}
+            image={installation.image}
+            label={installation.title}
+            lines={[installation.location, installation.dates]}
+          />
+        ))
+      }
+    </div>
+  </div>
+
+  <div>
+    <span class="homeMenuHeading">Archive:</span>
+    <div class="homeTileRow">
+      {
+        dates.map((entry) => (
+          <MenuTile
+            href={`/archive#${encodeURIComponent(entry.date)}`}
+            image={entry.image}
+            label={entry.date}
+          />
+        ))
+      }
+    </div>
+  </div>
+</div>

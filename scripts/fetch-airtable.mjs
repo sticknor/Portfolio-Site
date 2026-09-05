@@ -209,6 +209,7 @@ async function main() {
   const about = {
     siteTitle: aboutRecord?.get("Site Title") ?? "Sam Ticknor",
     bio: aboutRecord?.get("Bio") ?? "",
+    shortBio: aboutRecord?.get("Short Bio") ?? "",
     showCV: Boolean(aboutRecord?.get("Show CV")),
     bioImage: await firstImage(aboutRecord?.get("Bio Image")),
     splashImage: splashWorks[0]?.image ?? null,

@@ -19,10 +19,10 @@ function ImageOnlyModule({ module, widthPercent }) {
         className="workImage"
         style={{ width: `${widthPercent}%`, height: "auto" }}
         image={work.image}
-        alt={work.title || "artwork"}
+        work={work}
         sizes={`(max-width: 900px) 100vw, ${sizesByWidth[widthPercent]}`}
       />
-      {module.showWorkTitlesWithinModule && formatWorkInfoLine(work)}
+      {formatWorkInfoLine(work)}
       {module.moduleTitle && <div className="workText">{module.moduleTitle}</div>}
       {module.moduleText && <div className="workText">{module.moduleText}</div>}
     </div>
@@ -47,23 +47,21 @@ function ImageWithTextModule({ module, textFirst = false }) {
         className="workImage"
         style={{ width: "100%", height: "auto" }}
         image={work.image}
-        alt={work.title || "artwork"}
+        work={work}
         sizes="(max-width: 900px) 100vw, 45vw"
       />
-      {module.showWorkTitlesWithinModule && formatWorkInfoLine(work)}
+      {formatWorkInfoLine(work)}
     </div>
   );
 
   const text = (
     <div
       key="text"
-      className="imageWithTextModuleText"
+      className="imageWithTextModuleText moduleProse"
       style={{
         display: "flex",
-        fontSize: 18,
         flex: 1,
         flexDirection: "column",
-        whiteSpace: "pre-wrap",
         ...(textFirst ? { textAlign: "left", alignItems: "flex-end" } : {}),
       }}
     >
@@ -76,11 +74,10 @@ function ImageWithTextModule({ module, textFirst = false }) {
     <div
       className={`pageModule ${
         textFirst ? "textWithImageModule" : "imageWithTextModule"
-      } mobileStack`}
+      } mobileStack moduleRow`}
       style={{
         flexDirection: "row",
         alignItems: "center",
-        gap: 50,
       }}
     >
       {textFirst ? [text, image] : [image, text]}
@@ -91,18 +88,17 @@ function ImageWithTextModule({ module, textFirst = false }) {
 function TextModule({ module }) {
   return (
     <div
-      className="pageModule textModule"
+      className="pageModule textModule moduleRow"
       style={{
         flexDirection: "row",
         alignItems: "flex-start",
-        gap: 50,
       }}
     >
       {module.moduleTitle && (
-        <div style={{ fontSize: 18 }}>{module.moduleTitle}</div>
+        <div className="moduleProse">{module.moduleTitle}</div>
       )}
       {module.moduleText && (
-        <div style={{ maxWidth: "70%", fontSize: 18, whiteSpace: "pre-wrap" }}>
+        <div className="moduleProse" style={{ maxWidth: "70%" }}>
           {module.moduleText}
         </div>
       )}
@@ -113,18 +109,17 @@ function TextModule({ module }) {
 function LinkModule({ module }) {
   return (
     <div
-      className="pageModule linkModule"
+      className="pageModule linkModule moduleRow"
       style={{
         flexDirection: "row",
         alignItems: "flex-start",
-        gap: 50,
-        marginBottom: 10,
+        marginBottom: "var(--space-2)",
       }}
     >
       {module.moduleTitle && (
         <a
+          className="navLink"
           href={module.moduleText}
-          style={{ fontSize: 18 }}
           target="_blank"
           rel="noreferrer"
         >
@@ -145,7 +140,7 @@ function CarouselModule({ module }) {
           flexDirection: "row",
           overflowX: "scroll",
           maxWidth: "100%",
-          gap: 50,
+          gap: "var(--space-6)",
           justifyContent: "space-between",
         }}
       >
@@ -163,11 +158,11 @@ function CarouselModule({ module }) {
             <WorkImage
               className="workImage"
               image={w.image}
-              alt={w.title || "artwork"}
+              work={w}
               sizes="(max-width: 900px) 90vw, 60vw"
               style={{ maxHeight: "70vh", width: "100%", minHeight: "50vh" }}
             />
-            {module.showWorkTitlesWithinModule && formatWorkInfoLine(w)}
+            {formatWorkInfoLine(w)}
           </div>
         ))}
       </div>
@@ -210,10 +205,10 @@ function CascadeModule({ module, direction }) {
             <WorkImage
               className="workImage"
               image={w.image}
-              alt={w.title || "artwork"}
+              work={w}
               sizes={`(max-width: 1100px) 90vw, ${Math.round(imageWidth)}vw`}
             />
-            {module.showWorkTitlesWithinModule && formatWorkInfoLine(w)}
+            {formatWorkInfoLine(w)}
           </div>
         ))}
       </div>
@@ -228,25 +223,18 @@ function GridModule({ module }) {
 
   return (
     <div className="pageModule gridModule">
-      <div className="workMasonryGrid" style={{ maxWidth: "100%" }}>
+      <div className="work-grid">
         {works.map((w, i) => (
-          <div
-            key={`grid-${i}`}
-            className="workMasonryItem gridElement"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <WorkImage
-              className="workImage"
-              image={w.image}
-              alt={w.title || "artwork"}
-              sizes="(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
-            />
-            {module.showWorkTitlesWithinModule && formatWorkInfoLine(w)}
-          </div>
+          <figure key={`grid-${i}`} className="work gridElement">
+            <div className="work__image">
+              <WorkImage
+                className="workImage"
+                image={w.image}
+                work={w}
+                sizes="(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
+              />
+            </div>
+          </figure>
         ))}
       </div>
       {module.moduleTitle && <div className="workText">{module.moduleTitle}</div>}
@@ -284,7 +272,7 @@ function VideoModule({ module }) {
           allowFullScreen
         ></iframe>
       </div>
-      {module.showWorkTitlesWithinModule && formatWorkInfoLine(work)}
+      {formatWorkInfoLine(work)}
       {module.moduleTitle && <div className="workText">{module.moduleTitle}</div>}
       {module.moduleText && <div className="workText">{module.moduleText}</div>}
     </div>

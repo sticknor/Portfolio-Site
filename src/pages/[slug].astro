@@ -85,17 +85,8 @@ const ogImage =
   ) : (
     <Layout title={pageTitle} ogImage={ogImage}>
       {type === "collection" && (
-        <div style={{ marginTop: "64px", backgroundColor: "#fff" }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              padding: "64px",
-              flex: 1,
-              gap: "64px",
-            }}
-            class="mobileStack mobilePadding mobileGap"
-          >
+        <div class="pageShell">
+          <div class="pageInner pageRow mobileStack mobileGap">
             <div
               style={{
                 flex: 1,
@@ -106,23 +97,17 @@ const ogImage =
               }}
             >
               <div>
-                <div style={{ fontWeight: 600, marginBottom: "8px" }}>
+                <div class="collectionTitle">
                   {collection.title}
                   {collection.years && (
-                    <div style={{ opacity: 0.6, fontWeight: 500 }}>
+                    <div class="collectionYears">
                       {" — "}
                       {collection.years}
                     </div>
                   )}
                 </div>
                 {collection.collectionStatement && (
-                  <div
-                    style={{
-                      paddingTop: "24px",
-                      paddingBottom: "0px",
-                      whiteSpace: "pre-wrap",
-                    }}
-                  >
+                  <div class="collectionStatement type-prose">
                     {collection.collectionStatement}
                   </div>
                 )}
@@ -145,19 +130,7 @@ const ogImage =
       )}
 
       {type === "installation" && (
-        <div
-          id="scrollContent"
-          class="mobilePadding"
-          style={{
-            width: "100%",
-            marginTop: "64px",
-            paddingTop: "64px",
-            paddingLeft: "64px",
-            paddingRight: "64px",
-            backgroundColor: "#fff",
-            boxSizing: "border-box",
-          }}
-        >
+        <div id="scrollContent" class="pageModuleScroll mobilePadding">
           <ModuleRenderer modules={modules} />
         </div>
       )}

@@ -22,17 +22,8 @@ const ogImage = sections
 ---
 
 <Layout title={`Archive — ${about.siteTitle}`} ogImage={ogImage}>
-  <div style={{ marginTop: "64px", backgroundColor: "#fff" }}>
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        padding: "64px",
-        flex: 1,
-        gap: "64px",
-      }}
-      class="mobileStack mobilePadding mobileGap"
-    >
+  <div class="pageShell">
+    <div class="pageInner pageRow mobileStack mobileGap">
       <div class="pageDateCollectionsNavSlot">
         {/* Invisible copy reserves layout space for the fixed nav */}
         <div class="pageDateCollectionsNavMeasure" aria-hidden="true">
@@ -65,14 +56,26 @@ const ogImage = sections
           overflow: "visible",
         }}
       >
-        <WorksLightbox client:load sections={sections} variant="date" />
+        <WorksLightbox client:load sections={sections} />
       </div>
     </div>
   </div>
 </Layout>
 
 <script>
-  const ARCHIVE_NAV_OFFSET = 128;
+  const ARCHIVE_NAV_OFFSET =
+    parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue(
+        "--navbar-height",
+      ),
+      10,
+    ) +
+    parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue(
+        "--page-padding-y",
+      ),
+      10,
+    );
 
   function updateArchiveYearNav() {
     const nav = document.querySelector(".pageDateCollectionsNavFixed");

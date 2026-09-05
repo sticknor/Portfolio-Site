@@ -13,28 +13,8 @@ const links = [
 <header class="siteHeader">
   <MobileMenu pathname={pathname} />
   <div class="navbarBar">
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        gap: "32px",
-        padding: "0px 32px",
-      }}
-      class="mobilePaddingSmall"
-    >
-      <a
-        style={{
-          textDecoration: "none",
-          fontWeight: 600,
-          fontSize: "16px",
-          whiteSpace: "nowrap",
-          lineHeight: "100%",
-          color: "#999",
-        }}
-        href="/"
-      >
+    <div class="navbarInner">
+      <a class="siteName" href="/">
         Sam
         <br />
         Ticknor
@@ -43,12 +23,10 @@ const links = [
         {
           links.map((link) => (
             <a
-              class={pathname === link.to ? "" : "clickable"}
-              style={{
-                textDecoration: pathname === link.to ? "underline" : "none",
-                color: "black",
-                fontWeight: 600,
-              }}
+              class:list={[
+                "navLink",
+                pathname === link.to ? "navLink--active" : "clickable",
+              ]}
               href={link.to}
             >
               {link.label}

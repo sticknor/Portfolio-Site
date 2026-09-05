@@ -6,40 +6,17 @@ const bioImage = about.bioImage;
 ---
 
 <Layout title={`About — ${about.siteTitle}`} ogImage={bioImage?.src}>
-  <div class="pageAbout" style={{ marginTop: "64px", minHeight: "100vh" }}>
-    <div
-      class="pageAbout-inner mobileStack mobilePadding mobileGap"
-      style={{
-        padding: "64px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "32px",
-        alignItems: "stretch",
-        justifyContent: "flex-start",
-        width: "100%",
-        maxWidth: "100%",
-        boxSizing: "border-box",
-      }}
-    >
-      <div
-        class="pageAbout-portrait"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          maxWidth: "350px",
-          minWidth: 0,
-          alignSelf: "flex-start",
-        }}
-      >
+  <div class="pageAbout pageShell" style={{ minHeight: "100vh" }}>
+    <div class="pageAbout-inner pageInner pageStack mobileStack mobileGap">
+      <div class="pageAbout-portrait">
         {
           bioImage && (
             <img
               alt="Studio portrait of Sam Ticknor"
-              style={{ width: "100%", height: "auto", display: "block" }}
+              class="pageAbout-portraitImg"
               src={bioImage.src}
               srcset={bioImage.srcSet}
-              sizes="(max-width: 480px) 100vw, 350px"
+              sizes="(max-width: 860px) 100vw, 350px"
               width={bioImage.width}
               height={bioImage.height}
               loading="lazy"
@@ -48,21 +25,11 @@ const bioImage = about.bioImage;
           )
         }
       </div>
-      <div
-        style={{
-          display: "flex",
-          flex: 1,
-          flexDirection: "column",
-          gap: "32px",
-          minWidth: 0,
-          width: "100%",
-        }}
-        class="mobileGap"
-      >
+      <div class="pageStack mobileGap">
         {
           about.bio && (
             <div
-              class="pageAbout-bio"
+              class="pageAbout-bio type-prose"
               style={{
                 maxWidth: "900px",
                 whiteSpace: "pre-wrap",
@@ -77,11 +44,8 @@ const bioImage = about.bioImage;
           about.showCV && (
             <a
               href="/cv"
-              class="clickable"
-              style={{
-                textDecoration: "underline",
-                fontWeight: 600,
-              }}
+              class="clickable navLink"
+              style={{ textDecoration: "underline" }}
             >
               CV
             </a>

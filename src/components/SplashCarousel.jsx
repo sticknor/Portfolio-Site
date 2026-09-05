@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { formatWorkInfoLine } from "./formatWorkDetails.jsx";
+import { formatWorkAltText, formatWorkInfoLine } from "./formatWorkDetails.jsx";
 
 // A 1x1 transparent gif: matched by the mobile <source> so phones never
 // download the splash images (their container is display:none on mobile,
@@ -35,6 +35,7 @@ function SplashCarousel({ works, interval = 5000 }) {
       {works.map((work, i) => (
         <div
           key={work.image.src}
+          className="splashSlide"
           style={{
             position: "absolute",
             top: 0,
@@ -42,11 +43,8 @@ function SplashCarousel({ works, interval = 5000 }) {
             width: "100%",
             height: "100%",
             boxSizing: "border-box",
-            // Clear the fixed navbar, leave room for the caption below
-            padding: "88px 40px 32px 40px",
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
             opacity: i === index ? 1 : 0,
             transition: "opacity 1.2s ease",
           }}
@@ -59,7 +57,7 @@ function SplashCarousel({ works, interval = 5000 }) {
               sizes="55vw"
             />
             <img
-              alt={work.title || `Highlighted artwork ${i + 1} by Sam Ticknor`}
+              alt={formatWorkAltText(work)}
               src={work.image.src}
               width={work.image.width}
               height={work.image.height}
@@ -74,7 +72,7 @@ function SplashCarousel({ works, interval = 5000 }) {
               }}
             />
           </picture>
-          <div style={{ flex: "0 0 auto", fontSize: "14px", lineHeight: 1.5 }}>
+          <div className="type-caption">
             {formatWorkInfoLine(work)}
           </div>
         </div>

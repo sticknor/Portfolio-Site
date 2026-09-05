@@ -5,23 +5,21 @@ import cv from "../data/cv.json";
 ---
 
 <Layout title={`CV — ${about.siteTitle}`}>
-  <div style={{ marginTop: "64px" }}>
-    <div style={{ padding: "64px" }} class="mobilePadding">
+  <div class="pageShell">
+    <div class="pageInner mobilePadding">
       {
         cv.map(({ category, records }) => (
-          <div style={{ marginBottom: "64px" }}>
-            <div style={{ fontWeight: 600, marginBottom: "32px" }}>
-              {category}
-            </div>
+          <div class="cvCategory">
+            <div class="homeMenuHeading">{category}</div>
             {records.map((record) => (
-              <div style={{ marginBottom: "16px" }}>
+              <div class="cvEntry">
                 <div>{record.line1}</div>
-                {record.line2 && <div style={{ opacity: 0.5 }}>{record.line2}</div>}
-                {record.line3 && <div style={{ opacity: 0.5 }}>{record.line3}</div>}
-                {record.line4 && <div style={{ opacity: 0.5 }}>{record.line4}</div>}
+                {record.line2 && <div class="cvEntryDetail">{record.line2}</div>}
+                {record.line3 && <div class="cvEntryDetail">{record.line3}</div>}
+                {record.line4 && <div class="cvEntryDetail">{record.line4}</div>}
                 {record.link.url && (
                   <a
-                    style={{ opacity: 0.5 }}
+                    class="cvEntryDetail"
                     target="_blank"
                     rel="noreferrer"
                     href={record.link.url}

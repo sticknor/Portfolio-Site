@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { formatWorkInfoLine } from "./formatWorkDetails.jsx";
+import {
+  formatWorkAltText,
+  formatWorkLightboxCaption,
+} from "./formatWorkDetails.jsx";
 import WorkImage from "./WorkImage.jsx";
 
 /**
- * Masonry grid(s) of work thumbnails with a full-screen lightbox
+ * Fixed CSS-grid of work thumbnails with a full-screen lightbox
  * (keyboard + touch-swipe navigation). Interactive island.
  *
  * Two ways to feed it:
  *   works    — a flat list rendered as a single grid (collection pages)
  *   sections — [{ id, heading, works }] rendered as anchored sections that
  *              share one continuous lightbox (the /archive page)
- *
- * variant "collection": CSS multi-column masonry.
- * variant "date": CSS grid (source order matches reading order) with captions.
  */
-function WorksLightbox({ works, sections, variant = "collection" }) {
+function WorksLightbox({ works, sections }) {
   const sectionList = sections ?? [{ id: undefined, heading: undefined, works }];
   const allWorks = sectionList.flatMap((section) => section.works);
 
@@ -76,58 +76,46 @@ function WorksLightbox({ works, sections, variant = "collection" }) {
         onKeyDown={handleKeyDown}
         tabIndex="-1"
         ref={lightboxRef}
-        style={{
-          touchAction: "none",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0, 0, 0, .8)",
-          display: "flex",
-          flexDirection: "row",
-          flex: 1,
-          boxSizing: "border-box",
-          height: "100vh",
-          padding: "24px 24px 100px 24px",
-          gap: 0,
-          zIndex: 1000,
-          alignItems: "stretch",
-          justifyContent: "center",
-        }}
-        className="upArrowOnHover mobilePaddingSmall"
+        className="workLightbox"
         onClick={() => {
           setFullScreenIndex(undefined);
         }}
       >
+        <button
+          type="button"
+          className="workLightboxClose clickable"
+          aria-label="Close"
+          onClick={(e) => {
+            e.stopPropagation();
+            setFullScreenIndex(undefined);
+          }}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M6 6l12 12M18 6L6 18"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
         <div
+          className="workLightboxImagePane"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onTouchMove={handleTouchMove}
-          style={{
-            display: "flex",
-            flex: 1,
-            minWidth: 0,
-            minHeight: 0,
-            width: "100%",
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
         >
           <img
-            alt={fullScreenWorkRecord.title || "artwork"}
+            alt={formatWorkAltText(fullScreenWorkRecord)}
             loading="eager"
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100%",
-              width: "auto",
-              height: "auto",
-              objectFit: "contain",
-              display: "block",
-            }}
+            className="workLightboxImage rightArrowOnHover"
             src={fullScreenWorkRecord.image?.src}
-            className="rightArrowOnHover"
             onClick={(e) => {
               e.stopPropagation();
               setFullScreenIndex(
@@ -136,26 +124,14 @@ function WorksLightbox({ works, sections, variant = "collection" }) {
             }}
           />
         </div>
-        {(fullScreenWorkRecord.title ||
-          fullScreenWorkRecord.medium ||
-          fullScreenWorkRecord.year) && (
+        {formatWorkLightboxCaption(fullScreenWorkRecord) && (
           <div
-            style={{
-              background:
-                "linear-gradient(90deg,rgba(255, 255, 240, 1) 0%,rgba(246, 254, 255, 1) 100%)",
-              textAlign: "left",
-              padding: "32px",
-              cursor: "default",
-              position: "fixed",
-              bottom: "0px",
-              right: "0px",
-            }}
+            className="workLightboxCaption"
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="mobilePaddingSmall"
           >
-            {formatWorkInfoLine(fullScreenWorkRecord)}
+            {formatWorkLightboxCaption(fullScreenWorkRecord)}
           </div>
         )}
       </div>
@@ -179,38 +155,26 @@ function WorksLightbox({ works, sections, variant = "collection" }) {
               {section.heading && (
                 <div className="archiveSectionHeading">{section.heading}</div>
               )}
-              <div
-                className={
-                  variant === "date"
-                    ? "workMasonryGrid workMasonryGrid--datePage"
-                    : "workMasonryGrid"
-                }
-                style={{ maxWidth: "100%" }}
-              >
+              <div className="work-grid">
                 {section.works.map((work, i) => {
                   const globalIndex = baseIndex + i;
                   return (
-                    <div
+                    <figure
                       key={`work-${globalIndex}`}
-                      className="workMasonryItem clickable"
+                      className="work clickable"
                       onClick={() => {
                         setFullScreenIndex(globalIndex);
                       }}
                     >
-                      <WorkImage
-                        className="workImage"
-                        alt={work.title || "artwork"}
-                        sizes="(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
-                        image={work.image}
-                      />
-                      {variant === "date" && work.title && (
-                        <div className="workMasonryItemCaption">
-                          <div style={{ textAlign: "center" }}>
-                            <i>{work.title}</i>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                      <div className="work__image">
+                        <WorkImage
+                          className="workImage"
+                          work={work}
+                          sizes="(max-width: 600px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                          image={work.image}
+                        />
+                      </div>
+                    </figure>
                   );
                 })}
               </div>
