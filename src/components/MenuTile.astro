@@ -1,31 +1,31 @@
 ---
 /**
  * Image tile link used by the homepage menus (Collections, Installations,
- * Archive). Cover-cropped 3:2 card with a gradient
- * and overlaid label, matching the original installation cards.
+ * Archive). Cover-cropped 3:2 image with a gray label panel flush underneath.
  */
 const { href, image, label, lines = [], eager = false } = Astro.props;
 ---
 
-<a class="menuTile" href={href}>
-  {
-    image && (
-      <img
-        class="menuTileImg"
-        alt={`${label} preview`}
-        src={image.src}
-        srcset={image.srcSet}
-        sizes="(max-width: 600px) 100vw, (max-width: 860px) 50vw, (max-width: 1100px) 25vw, 20vw"
-        width={image.width}
-        height={image.height}
-        loading={eager ? "eager" : "lazy"}
-        fetchpriority={eager ? "high" : "auto"}
-        decoding="async"
-      />
-    )
-  }
-  <div class="menuTileShade" aria-hidden="true" />
-  <div class="menuTileBody clickable">
+<a class="menuTile clickable" href={href}>
+  <div class="menuTileMedia">
+    {
+      image && (
+        <img
+          class="menuTileImg"
+          alt={`${label} preview`}
+          src={image.src}
+          srcset={image.srcSet}
+          sizes="(max-width: 600px) 100vw, (max-width: 860px) 50vw, (max-width: 1100px) 25vw, 20vw"
+          width={image.width}
+          height={image.height}
+          loading={eager ? "eager" : "lazy"}
+          fetchpriority={eager ? "high" : "auto"}
+          decoding="async"
+        />
+      )
+    }
+  </div>
+  <div class="menuTileBody">
     <div class="menuTileLabel">{label}</div>
     {
       lines.filter(Boolean).length > 0 && (

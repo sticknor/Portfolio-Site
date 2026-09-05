@@ -68,7 +68,7 @@ function SplashCarousel({ works, interval = 5000 }) {
                 width: "100%",
                 height: "100%",
                 objectFit: "contain",
-                objectPosition: "center",
+                objectPosition: "top center",
               }}
             />
           </picture>
