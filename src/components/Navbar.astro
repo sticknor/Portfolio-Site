@@ -1,17 +1,21 @@
 ---
 import MobileMenu from "./MobileMenu.astro";
+import { loadProcessPosts } from "../lib/substack.js";
 
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const { posts } = await loadProcessPosts();
+const showProcess = posts.length > 0;
 
 const links = [
   { to: "/", label: "Works" },
+  ...(showProcess ? [{ to: "/notes", label: "Notes" }] : []),
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
 ---
 
 <header class="siteHeader">
-  <MobileMenu pathname={pathname} />
+  <MobileMenu pathname={pathname} showProcess={showProcess} />
   <div class="navbarBar">
     <div class="navbarInner">
       <a class="siteName" href="/">

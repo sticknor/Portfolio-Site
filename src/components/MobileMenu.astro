@@ -1,9 +1,10 @@
 ---
 import HomeMenuSections from "./HomeMenuSections.astro";
 
-const { pathname } = Astro.props;
+const { pathname, showProcess = false } = Astro.props;
 
 const navLinks = [
+  ...(showProcess ? [{ to: "/notes", label: "Notes" }] : []),
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];

@@ -1,20 +1,21 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import about from "../data/about.json";
+import { SUBSTACK } from "../lib/substack.js";
 ---
 
 <Layout title={`Contact — ${about.siteTitle}`}>
   <div class="pageShell" style={{ minHeight: "100vh" }}>
     <div class="pageInner pageStack pageStack--loose mobileStack mobileGap">
       <div>
-        To recieve the occasional studio update, such as exhibition
+        To receive the occasional studio update, such as exhibition
         announcements and studio sales,
         <br />
         <a
           target="_blank"
           rel="noreferrer"
-          href="https://airtable.com/appFu4bKxcQWPoN69/shrU6lsf5P4fqJlpj"
-          style={{ fontWeight: 600, textDecoration: "none" }}
+          href={SUBSTACK.announcementsSignup}
+          style={{ fontWeight: 600 }}
           class="clickable"
         >
           sign up for my mailing list
@@ -28,7 +29,7 @@ import about from "../data/about.json";
           target="_blank"
           rel="noreferrer"
           href="https://www.instagram.com/sammytthebrave/"
-          style={{ fontWeight: 600, textDecoration: "none" }}
+          style={{ fontWeight: 600 }}
           class="clickable"
         >
           @sammytthebrave
@@ -42,7 +43,7 @@ import about from "../data/about.json";
           target="_blank"
           rel="noreferrer"
           href="mailto:srticknor@gmail.com"
-          style={{ fontWeight: 600, textDecoration: "none" }}
+          style={{ fontWeight: 600 }}
           class="clickable"
         >
           srticknor@gmail.com

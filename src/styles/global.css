@@ -928,3 +928,157 @@ iframe {
     text-align: center;
   }
 }
+
+/* Process notes — one column, newest first */
+.processPage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.processIntro,
+.processSubtitle,
+.processPostBody {
+  max-width: 900px;
+}
+
+.processPage .archiveSection {
+  margin-bottom: 0;
+}
+
+.processPostTitle {
+  max-width: 900px;
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  line-height: var(--line-height-prose);
+  margin: 0;
+}
+
+.processPost > .processPostDate {
+  margin-top: var(--space-1);
+}
+
+.processPostDate {
+  opacity: 0.5;
+}
+
+.processSubtitle {
+  margin: var(--space-3) 0 0;
+}
+
+.processCover {
+  max-width: min(100%, 900px);
+  height: auto;
+  display: block;
+  margin-top: var(--space-3);
+}
+
+.processPostBody {
+  margin-top: var(--space-3);
+}
+
+.processPostBody :where(p, ul, ol, blockquote, figure) {
+  margin: 0 0 var(--space-3);
+}
+
+.processPostBody :where(h2, h3, h4) {
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  line-height: var(--line-height-prose);
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.processPostBody :where(ul, ol) {
+  padding-left: var(--space-3);
+}
+
+.processPostBody li + li {
+  margin-top: var(--space-1);
+}
+
+.processPostBody img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.processPostBody figure img + img {
+  margin-top: var(--space-2);
+}
+
+.processPostBody figcaption {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  color: var(--color-text-muted);
+}
+
+.processPostBody a {
+  text-decoration: underline;
+}
+
+.processPostBody blockquote {
+  margin-left: 0;
+  padding-left: var(--space-3);
+}
+
+.processReadLink {
+  display: inline-block;
+  margin-top: var(--space-3);
+  opacity: 0.5;
+  text-decoration: underline;
+}
+
+.processPostBody + .processReadLink {
+  margin-top: 0;
+}
+
+.processNotes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  position: relative;
+}
+
+.processNotes[data-mode="stack"] .processPost + .processPost,
+.processNotes[data-mode="select"] .processEarlier {
+  position: relative;
+}
+
+.processNotes::before,
+.processNotes[data-mode="stack"] .processPost + .processPost::before,
+.processNotes[data-mode="select"] .processEarlier::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--section-gap) / -2);
+  left: 0;
+  width: min(100%, 900px);
+  height: 1px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.processEarlier {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 900px;
+}
+
+.processEarlierLink {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-weight: 600;
+  line-height: var(--line-height-prose);
+  text-decoration: none;
+}
+
+.processPost[hidden],
+.processEarlierLink[hidden] {
+  display: none;
+}
+
+.processEarlier .processPostDate {
+  font-weight: 400;
+}

@@ -1,0 +1,139 @@
+---
+import Layout from "../layouts/Layout.astro";
+import about from "../data/about.json";
+import { STACK_UNTIL, SUBSTACK, loadProcessPosts } from "../lib/substack.js";
+
+const feed = await loadProcessPosts();
+const posts = feed.posts;
+
+if (!posts.length) {
+  return Astro.redirect("/");
+}
+
+const selectMode = posts.length > STACK_UNTIL;
+---
+
+<Layout title={`Notes — ${about.siteTitle}`}>
+  <script slot="head" is:inline>
+    window.__openNote = location.hash.slice(1);
+    if (location.hash) {
+      history.replaceState(null, "", location.pathname + location.search);
+    }
+  </script>
+  <div class="pageShell" style={{ minHeight: "100vh" }}>
+    <div class="pageInner processPage">
+      <div class="processIntro">
+        If you're interested in the studio process,
+        <br />
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href={SUBSTACK.processSignup}
+          style={{ fontWeight: 600 }}
+          class="clickable"
+        >
+          Get studio notes by email
+        </a>
+      </div>
+
+      <div class="processNotes" data-mode={selectMode ? "select" : "stack"}>
+        {
+          posts.map((post, index) => (
+            <section
+              class="archiveSection processPost"
+              id={post.id}
+              hidden={selectMode && index > 0}
+            >
+              <h2 class="processPostTitle">{post.title}</h2>
+              {post.date && <div class="processPostDate">{post.date}</div>}
+              {post.subtitle && <p class="processSubtitle">{post.subtitle}</p>}
+              {post.cover && (
+                <img
+                  class="processCover"
+                  src={post.cover}
+                  alt={post.title}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+              {post.html && (
+                <div class="processPostBody type-prose" set:html={post.html} />
+              )}
+              <a
+                class="clickable processReadLink"
+                target="_blank"
+                rel="noreferrer"
+                href={post.link}
+              >
+                Read on Substack
+              </a>
+            </section>
+          ))
+        }
+
+        {
+          selectMode && (
+            <div class="processEarlier">
+              {posts.map((post, index) => (
+                <a
+                  href={`#${post.id}`}
+                  class="processEarlierLink clickable"
+                  hidden={index === 0}
+                >
+                  <span class="processEarlierTitle">{post.title}</span>
+                  {post.date && (
+                    <span class="processPostDate">{post.date}</span>
+                  )}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script is:inline>
+  const notes = document.querySelector(".processNotes");
+  if (notes && notes.dataset.mode === "select") {
+    const articles = [...notes.querySelectorAll(".processPost")];
+    const links = [...notes.querySelectorAll(".processEarlierLink")];
+
+    function show(id, scroll) {
+      const known = articles.some((article) => article.id === id);
+      const openId = known ? id : articles[0].id;
+      for (const article of articles) article.hidden = article.id !== openId;
+      for (const link of links) {
+        link.hidden = link.getAttribute("href") === "#" + openId;
+      }
+      if (scroll) {
+        const note = document.getElementById(openId);
+        history.replaceState(null, "", "#" + openId);
+        requestAnimationFrame(() => {
+          note.scrollIntoView({ block: "start", behavior: "instant" });
+        });
+      }
+    }
+
+    for (const link of links) {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        show(link.getAttribute("href").slice(1), true);
+      });
+    }
+
+    document.querySelectorAll('a[href="/notes"]').forEach((navLink) => {
+      navLink.addEventListener("click", (event) => {
+        const path = location.pathname.replace(/\/$/, "") || "/";
+        if (path !== "/notes") return;
+        event.preventDefault();
+        const menu = document.getElementById("mobileMenuToggle");
+        if (menu) menu.checked = false;
+      });
+    });
+
+    const hash = decodeURIComponent(window.__openNote || "");
+    show(hash, false);
+  }
+</script>
