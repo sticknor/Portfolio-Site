@@ -1,7 +1,7 @@
-import { readFileSync } from "node:fs";
 import Parser from "rss-parser";
 import sanitizeHtml from "sanitize-html";
 import { parse } from "node-html-parser";
+import notesSnapshot from "./notes-snapshot.js";
 
 /** Substack URLs. Update these if the publication subdomain or section changes. */
 export const SUBSTACK = {
@@ -574,13 +574,8 @@ export async function loadProcessPosts() {
 }
 
 function savedPosts() {
-  try {
-    const file = new URL("./notes-snapshot.json", import.meta.url);
-    const data = JSON.parse(readFileSync(file, "utf8"));
-    return Array.isArray(data.posts) ? data.posts : [];
-  } catch {
-    return [];
-  }
+  const posts = notesSnapshot?.posts;
+  return Array.isArray(posts) ? posts : [];
 }
 
 export { STACK_UNTIL };
