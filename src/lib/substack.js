@@ -410,11 +410,20 @@ async function fetchFeedXml(url) {
 }
 
 /**
- * Slugs of posts in the Process section, newest first.
- * The section RSS can lag a new post; the archive listing is what Substack
- * itself uses to say which notes belong to Process.
+ * A subscribers-only post arrives as a short preview ending in "Read more".
+ * That is not a note to publish on the site.
  */
-async function processSectionSlugs() {
+function isSubscriberPreview(html) {
+  return /<a\b[^>]*>\s*Read more\s*<\/a>/i.test(html);
+}
+
+/**
+ * Slugs of public Process posts, newest first.
+ * The section RSS can lag a new post; the archive listing is what Substack
+ * itself uses to say which notes belong to Process. Subscriber-only posts
+ * stay on Substack.
+ */
+async function publicProcessSlugs() {
   const url = new URL("/api/v1/archive", SUBSTACK.publication);
   url.searchParams.set("sort", "new");
   url.searchParams.set("limit", String(POST_LIMIT));
@@ -428,8 +437,10 @@ async function processSectionSlugs() {
   return (data.posts || [])
     .filter(
       (post) =>
-        post.section_id === SUBSTACK.processSectionId ||
-        post.section_slug === "process",
+        (post.section_id === SUBSTACK.processSectionId ||
+          post.section_slug === "process") &&
+        post.audience === "everyone" &&
+        post.hidden !== true,
     )
     .map((post) => post.slug)
     .filter(Boolean);
@@ -447,19 +458,22 @@ export async function loadProcessPosts() {
 
   try {
     const sectionXml = await fetchFeedXml(SUBSTACK.processFeed);
-    let posts = await postsFromFeed(sectionXml);
+    let posts = (await postsFromFeed(sectionXml)).filter(
+      (post) => !isSubscriberPreview(post.html),
+    );
 
-    // A brand-new Process note shows up in the publication feed before the
-    // section feed. Keep only the notes the section listing names.
-    if (posts.length === 0) {
-      const slugs = new Set(await processSectionSlugs());
-      if (slugs.size) {
-        const mainXml = await fetchFeedXml(`${SUBSTACK.publication}/feed`);
-        const bySlug = new Map(
-          (await postsFromFeed(mainXml, slugs)).map((post) => [post.id, post]),
-        );
-        posts = [...slugs].map((slug) => bySlug.get(slug)).filter(Boolean);
-      }
+    // A brand-new public Process note can show up in the publication feed
+    // before the section feed. Keep only notes the section listing names.
+    const slugs = new Set(await publicProcessSlugs());
+    posts = posts.filter((post) => slugs.has(post.id));
+    if (posts.length === 0 && slugs.size) {
+      const mainXml = await fetchFeedXml(`${SUBSTACK.publication}/feed`);
+      const bySlug = new Map(
+        (await postsFromFeed(mainXml, slugs))
+          .filter((post) => !isSubscriberPreview(post.html))
+          .map((post) => [post.id, post]),
+      );
+      posts = [...slugs].map((slug) => bySlug.get(slug)).filter(Boolean);
     }
 
     const value = { ok: true, posts };
