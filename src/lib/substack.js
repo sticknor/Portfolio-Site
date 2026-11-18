@@ -8,8 +8,8 @@ export const SUBSTACK = {
   processFeed: "https://sammytthebrave.substack.com/feed?sectionId=503003",
   /** Process section id from the section page's RSS link. */
   processSectionId: 503003,
-  processSignup: "https://sammytthebrave.substack.com/s/process",
-  announcementsSignup: "https://sammytthebrave.substack.com/subscribe",
+  processSignup: "https://sammytthebrave.substack.com/s/notes",
+  announcementsSignup: "https://sammytthebrave.substack.com/s/announcements",
 };
 
 const FEED_TTL_MS = 60 * 60 * 1000;
@@ -74,6 +74,52 @@ function slugFromUrl(href) {
   }
 }
 
+function positiveNumber(value) {
+  const n = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+/**
+ * Large centered images fill the column. Images with no size options match
+ * the text. Anything else is a step narrower.
+ */
+function imageFrameClass(attrs) {
+  if (attrs.imageSize === "large" && attrs.align === "center") {
+    return "processImgFull";
+  }
+  if (!attrs.imageSize && !positiveNumber(attrs.resizeWidth)) {
+    return "processImgText";
+  }
+  return "processImgInset";
+}
+
+function applyImageSize(img, attrs = {}) {
+  const htmlWidth = positiveNumber(img.getAttribute("width"));
+  const htmlHeight = positiveNumber(img.getAttribute("height"));
+  const layoutWidth = positiveNumber(attrs.width) || htmlWidth;
+  const layoutHeight = positiveNumber(attrs.height) || htmlHeight;
+  if (layoutWidth && layoutHeight) {
+    img.setAttribute("width", String(Math.round(layoutWidth)));
+    img.setAttribute("height", String(Math.round(layoutHeight)));
+  }
+
+  img.removeAttribute("style");
+  const frame = img.closest("figure") || img;
+  frame.setAttribute("class", imageFrameClass(attrs));
+  if (frame !== img) img.removeAttribute("class");
+}
+
+/** Substack marks a centered line as text-align on the paragraph. */
+function keepTextAlign(el) {
+  const style = el.getAttribute("style") || "";
+  const match = style.match(/text-align\s*:\s*(center|right|justify)/i);
+  if (!match) {
+    el.removeAttribute("style");
+    return;
+  }
+  el.setAttribute("style", `text-align:${match[1].toLowerCase()}`);
+}
+
 function imageKey(url) {
   const match = String(url).match(
     /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
@@ -129,10 +175,14 @@ function simplifySubstackHtml(html, postId, postTitle) {
     }
     const imgs = images
       .filter((image) => image?.src)
-      .map(
-        (image) =>
-          `<img src="${escapeHtml(image.src)}" alt="${escapeHtml(alt || postTitle)}" />`,
-      )
+      .map((image) => {
+        const tag = `<img src="${escapeHtml(image.src)}" alt="${escapeHtml(alt || postTitle)}" />`;
+        const node = parse(tag).querySelector("img");
+        if (image.width) node.setAttribute("width", String(image.width));
+        if (image.height) node.setAttribute("height", String(image.height));
+        applyImageSize(node, image);
+        return node.toString();
+      })
       .join("");
     const captionHtml = caption
       ? `<figcaption>${escapeHtml(caption)}</figcaption>`
@@ -216,6 +266,9 @@ function simplifySubstackHtml(html, postId, postTitle) {
     img.setAttribute("alt", alt || postTitle);
     img.setAttribute("loading", "lazy");
     img.setAttribute("decoding", "async");
+    if (img.getAttribute("data-attrs") || !img.getAttribute("class")) {
+      applyImageSize(img, attrs);
+    }
   }
 
   for (const anchor of [...body.querySelectorAll("a")]) {
@@ -240,9 +293,22 @@ function simplifySubstackHtml(html, postId, postTitle) {
     el.remove();
   }
 
+  for (const el of [
+    ...body.querySelectorAll("p, h2, h3, h4, li, blockquote"),
+  ]) {
+    keepTextAlign(el);
+  }
+
   const keep = {
     a: new Set(["href", "id"]),
-    img: new Set(["src", "alt", "loading", "decoding"]),
+    img: new Set(["src", "alt", "loading", "decoding", "width", "height", "class"]),
+    figure: new Set(["class"]),
+    p: new Set(["id", "style"]),
+    h2: new Set(["id", "style"]),
+    h3: new Set(["id", "style"]),
+    h4: new Set(["id", "style"]),
+    li: new Set(["style"]),
+    blockquote: new Set(["style"]),
   };
   for (const el of body.querySelectorAll("*")) {
     const allowed = keep[el.tagName.toLowerCase()] || new Set(["id"]);
@@ -278,11 +344,22 @@ function sanitizePostHtml(html, slugToId) {
     ],
     allowedAttributes: {
       a: ["href", "id", "target", "rel"],
-      img: ["src", "alt", "loading", "decoding"],
-      h2: ["id"],
-      h3: ["id"],
-      h4: ["id"],
-      p: ["id"],
+      img: ["src", "alt", "loading", "decoding", "width", "height", "class"],
+      figure: ["class"],
+      h2: ["id", "style"],
+      h3: ["id", "style"],
+      h4: ["id", "style"],
+      li: ["style"],
+      blockquote: ["style"],
+      p: ["id", "style"],
+    },
+    allowedStyles: {
+      p: { "text-align": [/^(center|right|justify)$/] },
+      h2: { "text-align": [/^(center|right|justify)$/] },
+      h3: { "text-align": [/^(center|right|justify)$/] },
+      h4: { "text-align": [/^(center|right|justify)$/] },
+      li: { "text-align": [/^(center|right|justify)$/] },
+      blockquote: { "text-align": [/^(center|right|justify)$/] },
     },
     allowedSchemes: ["http", "https", "mailto"],
     allowProtocolRelative: false,

@@ -1,45 +1,90 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import about from "../data/about.json";
+import { SUBSTACK } from "../lib/substack.js";
 
 const bioImage = about.bioImage;
 ---
 
 <Layout title={`About — ${about.siteTitle}`} ogImage={bioImage?.src}>
   <div class="pageAbout pageShell" style={{ minHeight: "100vh" }}>
-    <div class="pageAbout-inner pageInner pageStack mobileStack mobileGap">
-      <div class="pageAbout-portrait">
-        {
-          bioImage && (
-            <img
-              alt="Studio portrait of Sam Ticknor"
-              class="pageAbout-portraitImg"
-              src={bioImage.src}
-              srcset={bioImage.srcSet}
-              sizes="(max-width: 860px) 100vw, 350px"
-              width={bioImage.width}
-              height={bioImage.height}
-              loading="lazy"
-              decoding="async"
-            />
-          )
-        }
-      </div>
-      <div class="pageStack mobileGap">
+    <div class="pageInner pageAboutColumns">
+      <div class="pageAboutMain">
+        <div class="pageAbout-portrait">
+          {
+            bioImage && (
+              <img
+                alt="Studio portrait of Sam Ticknor"
+                class="pageAbout-portraitImg"
+                src={bioImage.src}
+                srcset={bioImage.srcSet}
+                sizes="(max-width: 860px) 100vw, 350px"
+                width={bioImage.width}
+                height={bioImage.height}
+                loading="lazy"
+                decoding="async"
+              />
+            )
+          }
+        </div>
         {
           about.bio && (
-            <div
-              class="pageAbout-bio type-prose"
-              style={{
-                maxWidth: "900px",
-                whiteSpace: "pre-wrap",
-                width: "100%",
-              }}
-            >
+            <div class="pageAbout-bio type-prose">
               {about.bio}
             </div>
           )
         }
+      </div>
+      <div class="pageAboutMeta">
+        <div>
+          Sign up for either or both,
+          <br />
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={SUBSTACK.announcementsSignup}
+            style={{ fontWeight: 600 }}
+            class="clickable"
+          >
+            Announcements
+          </a>
+          {" and "}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={SUBSTACK.processSignup}
+            style={{ fontWeight: 600 }}
+            class="clickable"
+          >
+            Notes
+          </a>
+        </div>
+        <div>
+          I'm on Instagram,
+          <br />
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://www.instagram.com/sammytthebrave/"
+            style={{ fontWeight: 600 }}
+            class="clickable"
+          >
+            @sammytthebrave
+          </a>
+        </div>
+        <div>
+          Email me with inquiries, opportunities, questions, greetings,
+          <br />
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="mailto:srticknor@gmail.com"
+            style={{ fontWeight: 600 }}
+            class="clickable"
+          >
+            srticknor@gmail.com
+          </a>
+        </div>
         {
           about.showCV && (
             <a

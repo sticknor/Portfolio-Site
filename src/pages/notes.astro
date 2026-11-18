@@ -23,8 +23,6 @@ const selectMode = posts.length > STACK_UNTIL;
   <div class="pageShell" style={{ minHeight: "100vh" }}>
     <div class="pageInner processPage">
       <div class="processIntro">
-        If you're interested in the studio process,
-        <br />
         <a
           target="_blank"
           rel="noreferrer"
@@ -44,29 +42,33 @@ const selectMode = posts.length > STACK_UNTIL;
               id={post.id}
               hidden={selectMode && index > 0}
             >
-              <h2 class="processPostTitle">{post.title}</h2>
-              {post.date && <div class="processPostDate">{post.date}</div>}
-              {post.subtitle && <p class="processSubtitle">{post.subtitle}</p>}
-              {post.cover && (
-                <img
-                  class="processCover"
-                  src={post.cover}
-                  alt={post.title}
-                  loading="lazy"
-                  decoding="async"
-                />
-              )}
-              {post.html && (
-                <div class="processPostBody type-prose" set:html={post.html} />
-              )}
-              <a
-                class="clickable processReadLink"
-                target="_blank"
-                rel="noreferrer"
-                href={post.link}
-              >
-                Read on Substack
-              </a>
+              <div class="processPostMeta">
+                <h2 class="processPostTitle">{post.title}</h2>
+                {post.date && <div class="processPostDate">{post.date}</div>}
+                {post.subtitle && <p class="processSubtitle">{post.subtitle}</p>}
+                <a
+                  class="clickable processReadLink"
+                  target="_blank"
+                  rel="noreferrer"
+                  href={post.link}
+                >
+                  Read on Substack
+                </a>
+              </div>
+              <div class="processPostContent">
+                {post.cover && (
+                  <img
+                    class="processCover"
+                    src={post.cover}
+                    alt={post.title}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                {post.html && (
+                  <div class="processPostBody type-prose" set:html={post.html} />
+                )}
+              </div>
             </section>
           ))
         }

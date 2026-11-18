@@ -776,6 +776,30 @@ iframe {
   box-sizing: border-box;
 }
 
+.pageAboutColumns {
+  display: grid;
+  grid-template-columns: minmax(200px, 320px) minmax(0, 1fr);
+  column-gap: var(--space-8);
+  align-items: start;
+}
+
+.pageAboutMain {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.pageAboutMeta {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
 .pageAbout-portrait {
   display: flex;
   flex-direction: column;
@@ -796,9 +820,21 @@ iframe {
   word-wrap: break-word;
   font-size: var(--font-size-body);
   line-height: var(--line-height-prose);
+  white-space: pre-wrap;
 }
 
 @media screen and (max-width: 860px) {
+  .pageAboutColumns {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-4);
+  }
+
+  .pageAboutMain,
+  .pageAboutMeta {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
   .pageAbout-portrait {
     align-self: stretch;
     max-width: none;
@@ -929,32 +965,38 @@ iframe {
   }
 }
 
-/* Process notes — one column, newest first */
+/* Process notes — meta on the left, article on the right */
 .processPage {
   display: flex;
   flex-direction: column;
   gap: var(--section-gap);
 }
 
-.processIntro,
-.processSubtitle,
-.processPostBody {
-  max-width: 900px;
-}
-
 .processPage .archiveSection {
   margin-bottom: 0;
 }
 
+.processPost {
+  display: grid;
+  grid-template-columns: minmax(200px, 320px) minmax(0, 1fr);
+  column-gap: var(--space-8);
+  align-items: start;
+}
+
+.processPostMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .processPostTitle {
-  max-width: 900px;
   font-size: var(--font-size-body);
   font-weight: 600;
   line-height: var(--line-height-prose);
   margin: 0;
 }
 
-.processPost > .processPostDate {
+.processPostMeta .processPostDate {
   margin-top: var(--space-1);
 }
 
@@ -964,13 +1006,18 @@ iframe {
 
 .processSubtitle {
   margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+}
+
+.processPostContent > .processCover,
+.processPostContent > .processPostBody:first-child {
+  margin-top: 0;
 }
 
 .processCover {
-  max-width: min(100%, 900px);
+  max-width: 100%;
   height: auto;
   display: block;
-  margin-top: var(--space-3);
 }
 
 .processPostBody {
@@ -981,11 +1028,37 @@ iframe {
   margin: 0 0 var(--space-3);
 }
 
+.processPostBody > :where(p, ul, ol, blockquote, h2, h3, h4),
+.processPostBody figure.processImgText,
+.processPostBody img.processImgText {
+  width: 80%;
+}
+
+.processPostBody figure.processImgFull,
+.processPostBody img.processImgFull {
+  width: 100%;
+}
+
+.processPostBody figure.processImgInset,
+.processPostBody img.processImgInset {
+  width: 60%;
+}
+
 .processPostBody :where(h2, h3, h4) {
   font-size: var(--font-size-body);
   font-weight: 600;
   line-height: var(--line-height-prose);
   margin: var(--space-4) 0 var(--space-2);
+}
+
+.processPostBody > :where(p, ul, ol, blockquote, h2, h3, h4),
+.processPostBody figure.processImgText,
+.processPostBody img.processImgText,
+.processPostBody figure.processImgInset,
+.processPostBody img.processImgInset {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
 }
 
 .processPostBody :where(ul, ol) {
@@ -996,7 +1069,16 @@ iframe {
   margin-top: var(--space-1);
 }
 
+.processPostBody hr {
+  border: 0;
+  height: 1px;
+  width: 100%;
+  margin: var(--space-6) 0;
+  background: rgba(0, 0, 0, 0.15);
+}
+
 .processPostBody img {
+  width: 100%;
   max-width: 100%;
   height: auto;
   display: block;
@@ -1010,7 +1092,8 @@ iframe {
   margin-top: var(--space-1);
   font-size: var(--font-size-caption);
   line-height: var(--line-height-caption);
-  color: var(--color-text-muted);
+  text-align: center;
+  color: var(--color-text-subtle);
 }
 
 .processPostBody a {
@@ -1024,13 +1107,9 @@ iframe {
 
 .processReadLink {
   display: inline-block;
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
   opacity: 0.5;
   text-decoration: underline;
-}
-
-.processPostBody + .processReadLink {
-  margin-top: 0;
 }
 
 .processNotes {
@@ -1052,9 +1131,16 @@ iframe {
   position: absolute;
   top: calc(var(--section-gap) / -2);
   left: 0;
-  width: min(100%, 900px);
+  width: 100%;
   height: 1px;
   background: rgba(0, 0, 0, 0.15);
+}
+
+@media screen and (max-width: 860px) {
+  .processPost {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-4);
+  }
 }
 
 .processEarlier {
