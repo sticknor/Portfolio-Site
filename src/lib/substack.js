@@ -468,14 +468,16 @@ export function postsFromFeed(xml, slugs = null) {
   });
 }
 
-const FEED_HEADERS = {
-  Accept: "application/rss+xml, application/xml, text/xml, */*",
-  "User-Agent": "samt.work",
+// Substack rejects the build server when the agent is a short custom name.
+const SUBSTACK_HEADERS = {
+  Accept: "application/rss+xml, application/xml, text/xml, application/json, */*",
+  "User-Agent":
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
 };
 
 async function fetchFeedXml(url) {
   const response = await fetch(url, {
-    headers: FEED_HEADERS,
+    headers: SUBSTACK_HEADERS,
     signal: AbortSignal.timeout(15000),
   });
   if (!response.ok) throw new Error(`Feed responded ${response.status}`);
@@ -506,7 +508,7 @@ async function publicProcessSlugs() {
   url.searchParams.set("limit", String(POST_LIMIT));
   url.searchParams.set("section_id", String(SUBSTACK.processSectionId));
   const response = await fetch(url, {
-    headers: { Accept: "application/json", "User-Agent": "samt.work" },
+    headers: SUBSTACK_HEADERS,
     signal: AbortSignal.timeout(15000),
   });
   if (!response.ok) throw new Error(`Section list responded ${response.status}`);
