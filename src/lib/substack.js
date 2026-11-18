@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import Parser from "rss-parser";
 import sanitizeHtml from "sanitize-html";
 import { parse } from "node-html-parser";
@@ -559,10 +560,26 @@ export async function loadProcessPosts() {
     cache = { at: Date.now(), value };
     return value;
   } catch (err) {
-    console.warn(
-      `Process feed unavailable: ${err instanceof Error ? err.message : err}`,
-    );
+    const reason = err instanceof Error ? err.message : err;
+    const posts = savedPosts();
+    if (posts.length) {
+      console.warn(`Process feed unavailable: ${reason}. Using saved notes.`);
+      const value = { ok: true, posts };
+      cache = { at: Date.now(), value };
+      return value;
+    }
+    console.warn(`Process feed unavailable: ${reason}`);
     return { ok: false, posts: [] };
+  }
+}
+
+function savedPosts() {
+  try {
+    const file = new URL("./notes-snapshot.json", import.meta.url);
+    const data = JSON.parse(readFileSync(file, "utf8"));
+    return Array.isArray(data.posts) ? data.posts : [];
+  } catch {
+    return [];
   }
 }
 
