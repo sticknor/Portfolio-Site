@@ -1141,6 +1141,20 @@ iframe {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--space-4);
   }
+
+  .processPostBody > :where(p, ul, ol, blockquote, h2, h3, h4),
+  .processPostBody figure.processImgFull,
+  .processPostBody figure.processImgText,
+  .processPostBody figure.processImgInset,
+  .processPostBody img.processImgFull,
+  .processPostBody img.processImgText,
+  .processPostBody img.processImgInset,
+  .processPostBody hr {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .processEarlier {
